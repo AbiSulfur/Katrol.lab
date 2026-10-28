@@ -1,0 +1,83 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source "../**/*.blade.php";
+@source "../**/*.js";
+
+:root {
+  --font-display: 'Bricolage Grotesque', sans-serif;
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --spring-bounce: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+body {
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+.transition-spring {
+  transition: var(--spring-bounce);
+}
+
+/* Hard offset shadow */
+.shadow-hard {
+  box-shadow: 3px 3px 0px rgba(15, 23, 42, 0.9);
+}
+
+.shadow-hard-sm {
+  box-shadow: 2px 2px 0px rgba(15, 23, 42, 0.9);
+}
+
+.dark .shadow-hard {
+  box-shadow: 3px 3px 0px rgba(248, 250, 252, 0.85);
+}
+
+.dark .shadow-hard-sm {
+  box-shadow: 2px 2px 0px rgba(248, 250, 252, 0.85);
+}
+
+/* Accessibility: Fallback prefers-reduced-motion */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+}
