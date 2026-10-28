@@ -5,7 +5,7 @@
 @section('header_actions')
     <button
         type="button"
-        @click="resetKeDataContoh()"
+        @click="$dispatch('trigger-reset')"
         class="btn btn-ghost btn-sm"
         title="Muat ulang 12 data siswa standar"
     >
@@ -13,7 +13,7 @@
     </button>
     <button
         type="button"
-        @click="simpanKeDatabase()"
+        @click="$dispatch('trigger-simpan')"
         class="btn btn-primary btn-sm"
     >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -24,7 +24,7 @@
 @endsection
 
 @section('content')
-<div x-data="simulatorApp(@js($siswa), @js($defaultSettings))" x-init="init()" style="display:flex; width:100%; height:100%; overflow:hidden;">
+<div x-data="simulatorApp(@js($siswa), @js($defaultSettings))" x-init="init()" @trigger-simpan.window="simpanKeDatabase()" @trigger-reset.window="resetKeDataContoh()" style="display:flex; width:100%; height:100%; overflow:hidden;">
 
     <!-- ==================================================
          TOAST NOTIFICATION
@@ -53,7 +53,7 @@
 
         <!-- SECTION 1: KKM & Bobot -->
         <div class="panel-section">
-            <div class="label-caps" style="margin-bottom:16px;">Standar Penilaian</div>
+            <div class="label-caps" style="margin-bottom:16px;">Standar Kelulusan</div>
 
             <!-- KKM -->
             <div style="margin-bottom:20px;">
@@ -307,7 +307,7 @@
                     <!-- Header tile -->
                     <div style="padding:16px 20px; border-bottom:1px solid var(--ink-3); display:flex; align-items:center; justify-content:space-between;">
                         <div>
-                            <div style="font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--paper);">Lembar Nilai Komponen</div>
+                            <div style="font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--paper);">Lembar Nilai Komponen Siswa</div>
                             <div class="label-caps" style="margin-top:2px;" x-text="`${daftarSiswa.length} siswa`"></div>
                         </div>
                         <div style="display:flex; gap:6px;">
@@ -433,6 +433,8 @@
 @push('scripts')
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script>
+let chartBentoInstance = null;
+
 function simulatorApp(initialSiswa, initialSettings) {
     return {
         daftarSiswa: initialSiswa || [],
@@ -453,7 +455,6 @@ function simulatorApp(initialSiswa, initialSettings) {
             pesan: '',
             sukses: true
         },
-        chartObj: null,
 
         init() {
             this.$watch('daftarSiswa', () => this.refreshGrafik());
@@ -590,15 +591,15 @@ function simulatorApp(initialSiswa, initialSettings) {
             const binsSesudah = this.stats.sebaranSesudah;
             const labels = ['< 60', '60-69', '70-74', '75-84', '85-100'];
 
-            if (this.chartObj) {
-                this.chartObj.data.datasets[0].data = binsSebelum;
-                this.chartObj.data.datasets[1].data = binsSesudah;
-                this.chartObj.update();
+            if (chartBentoInstance) {
+                chartBentoInstance.data.datasets[0].data = binsSebelum;
+                chartBentoInstance.data.datasets[1].data = binsSesudah;
+                chartBentoInstance.update();
                 return;
             }
 
             const ctx = canvas.getContext('2d');
-            this.chartObj = new Chart(ctx, {
+            chartBentoInstance = new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: labels,
@@ -678,7 +679,7 @@ function simulatorApp(initialSiswa, initialSettings) {
         async simpanKeDatabase() {
             try {
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                const resp = await fetch("{!! route('api.siswa.simpan') !!}", {
+                const resp = await fetch("{{ route('api.siswa.simpan', [], false) }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -709,7 +710,7 @@ function simulatorApp(initialSiswa, initialSettings) {
 
             try {
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                const resp = await fetch("{!! route('api.siswa.reset') !!}", {
+                const resp = await fetch("{{ route('api.siswa.reset', [], false) }}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -749,7 +750,7 @@ function simulatorApp(initialSiswa, initialSettings) {
 
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = "{!! route('api.ekspor.csv') !!}";
+            form.action = "{{ route('api.ekspor.csv', [], false) }}";
             form.target = '_blank';
 
             const csrfInput = document.createElement('input');

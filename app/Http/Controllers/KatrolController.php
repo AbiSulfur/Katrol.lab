@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ProfilGuru;
 use App\Models\Siswa;
 use App\Models\SimulasiKatrol;
 use App\Services\KatrolService;
@@ -19,21 +20,101 @@ class KatrolController extends Controller
     }
 
     /**
-     * Tampilan utama Bento Grid simulator Katrol.Lab.
+     * Halaman Landing / Beranda publik.
+     */
+    public function home()
+    {
+        $profil = ProfilGuru::first();
+        return view('home', compact('profil'));
+    }
+
+    /**
+     * Halaman utama Workbench Simulator Katrol.Lab.
      */
     public function index()
     {
         $siswa = Siswa::orderBy('id', 'asc')->get();
         $riwayat = SimulasiKatrol::latest()->take(5)->get();
+        $profil = ProfilGuru::first();
 
         $defaultSettings = [
-            'kkm' => 75,
-            'bobot' => ['ph' => 40, 'pts' => 30, 'pas' => 30],
-            'metode' => 'none',
+            'kkm' => $profil ? $profil->default_kkm : 75,
+            'bobot' => [
+                'ph' => $profil ? $profil->default_bobot_ph : 40,
+                'pts' => $profil ? $profil->default_bobot_pts : 30,
+                'pas' => $profil ? $profil->default_bobot_pas : 30,
+            ],
+            'metode' => $profil ? $profil->default_metode : 'none',
+            'janganTurunkan' => $profil ? (bool)$profil->default_jangan_turunkan : true,
             'param' => ['tambah' => 5, 'minmaxMin' => 70, 'minmaxMax' => 100],
         ];
 
-        return view('simulator', compact('siswa', 'riwayat', 'defaultSettings'));
+        return view('simulator', compact('siswa', 'riwayat', 'defaultSettings', 'profil'));
+    }
+
+    /**
+     * Halaman Modul Profil Guru.
+     */
+    public function profil()
+    {
+        $profil = ProfilGuru::first() ?? new ProfilGuru([
+            'default_kkm' => 75,
+            'default_bobot_ph' => 40,
+            'default_bobot_pts' => 30,
+            'default_bobot_pas' => 30,
+            'default_metode' => 'none',
+            'default_jangan_turunkan' => true,
+        ]);
+
+        return view('profil', compact('profil'));
+    }
+
+    /**
+     * Simpan pembaruan profil guru ke database SQLite.
+     */
+    public function simpanProfil(Request $request): JsonResponse
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:100',
+            'nip' => 'nullable|string|max:50',
+            'sekolah' => 'nullable|string|max:150',
+            'mapel' => 'nullable|string|max:100',
+            'kelas' => 'nullable|string|max:50',
+            'tahun_ajaran' => ['nullable', 'string', 'regex:/^\d{4}\/\d{4}$/'],
+            'semester' => 'nullable|string|max:20',
+            'default_kkm' => 'required|integer|min:0|max:100',
+            'default_bobot_ph' => 'required|integer|min:0|max:100',
+            'default_bobot_pts' => 'required|integer|min:0|max:100',
+            'default_bobot_pas' => 'required|integer|min:0|max:100',
+            'default_metode' => 'required|string|in:none,tambah,skalaMax,akar,minmax',
+            'default_jangan_turunkan' => 'nullable|boolean',
+        ], [
+            'nama.required' => 'Nama lengkap guru wajib diisi.',
+            'tahun_ajaran.regex' => 'Format tahun ajaran harus YYYY/YYYY (contoh: 2024/2025).',
+        ]);
+
+        $totalBobot = (int)$validated['default_bobot_ph'] + (int)$validated['default_bobot_pts'] + (int)$validated['default_bobot_pas'];
+        if ($totalBobot !== 100) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Total bobot default PH, PTS, dan PAS harus tepat 100% (saat ini: ' . $totalBobot . '%).'
+            ], 422);
+        }
+
+        $validated['default_jangan_turunkan'] = $request->boolean('default_jangan_turunkan', true);
+
+        $profil = ProfilGuru::first();
+        if ($profil) {
+            $profil->update($validated);
+        } else {
+            $profil = ProfilGuru::create($validated);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Profil dan preferensi guru berhasil disimpan.',
+            'data' => $profil
+        ]);
     }
 
     /**
@@ -190,4 +271,3 @@ class KatrolController extends Controller
         ]);
     }
 }
-

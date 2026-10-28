@@ -23,7 +23,7 @@
 <body class="app-shell">
 
     <!-- ======================================================
-         HEADER — Solid black, Cuberto-signature, no blur
+         HEADER: Solid black, Cuberto-signature, no blur
          ====================================================== -->
     <header class="site-header no-print" x-data="{}">
         <div style="max-width:1600px; width:100%; margin:0 auto; padding:0 20px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
@@ -50,8 +50,34 @@
                 </div>
             </a>
 
+            <!-- Navigation Links -->
+            <nav style="display:flex; align-items:center; gap:6px;">
+                <a href="{{ route('home') }}" class="nav-pill {{ request()->routeIs('home') ? 'nav-pill-active' : '' }}">
+                    Beranda
+                </a>
+                <a href="{{ route('simulator.index') }}" class="nav-pill {{ (request()->routeIs('simulator.index') || request()->routeIs('simulator.view')) ? 'nav-pill-active' : '' }}">
+                    Simulator
+                </a>
+                <a href="{{ route('profil.index') }}" class="nav-pill {{ request()->routeIs('profil.index') ? 'nav-pill-active' : '' }}">
+                    Profil Guru
+                </a>
+            </nav>
+
             <!-- Header actions slot -->
             <div style="display:flex; align-items:center; gap:8px;">
+                @php
+                    $navProfil = \App\Models\ProfilGuru::first();
+                @endphp
+                @if($navProfil && !empty($navProfil->nama))
+                    <a href="{{ route('profil.index') }}" title="Profil Guru: {{ $navProfil->nama }}" style="display:inline-flex; align-items:center; gap:7px; padding:4px 10px; background:var(--surface); border:1px solid var(--border); text-decoration:none; border-radius:2px;">
+                        <span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--accent); color:#000; font-size:10px; font-weight:800; font-family:var(--font-mono);">
+                            {{ strtoupper(substr($navProfil->nama, 0, 1)) }}
+                        </span>
+                        <span style="font-size:12px; font-weight:600; color:var(--paper); max-width:130px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                            {{ $navProfil->nama }}
+                        </span>
+                    </a>
+                @endif
                 @yield('header_actions')
             </div>
 
