@@ -729,7 +729,225 @@
       gap: 10px;
     }
 
-    /* PRINT STYLES */
+    /* NAVIGASI & MENU MOBILE */
+    .desktop-nav-links {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .nav-btn-link {
+      background: none;
+      border: none;
+      font-family: var(--font-heading);
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--ink);
+      text-decoration: none;
+      cursor: pointer;
+      padding: 6px 10px;
+      border-radius: var(--radius);
+      transition: var(--transition-fast);
+    }
+    .nav-btn-link:hover {
+      color: var(--accent);
+      background-color: var(--subtle);
+    }
+    .nav-btn-link:focus-visible {
+      outline: 2px solid var(--accent);
+    }
+    .home-menu-toggle {
+      display: none;
+    }
+    @media (max-width: 767px) {
+      .desktop-nav-links {
+        display: none !important;
+      }
+      .home-menu-toggle {
+        display: inline-flex !important;
+      }
+    }
+    .home-mobile-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 16px;
+      background: var(--surface);
+      border: 1.5px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-top: 12px;
+    }
+    .home-mobile-nav .nav-btn-link {
+      text-align: left;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      border-radius: 0;
+    }
+    .home-mobile-nav .nav-btn-link:last-child {
+      border-bottom: none;
+    }
+
+    /* HERO PREVIEW STATIS (HTML/CSS MURNI) */
+    .hero-preview-box {
+      border: 1.5px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .hero-preview-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 12px;
+      border-bottom: 1px dashed var(--border-subtle);
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .hero-preview-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    @media (min-width: 600px) {
+      .hero-preview-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    .hero-preview-stat {
+      border-left: 3.5px solid var(--accent);
+      padding-left: 12px;
+    }
+    .hero-preview-label {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+    .hero-preview-val {
+      font-family: var(--font-mono);
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--ink);
+      line-height: 1.2;
+    }
+    .hero-preview-val .val-before {
+      color: var(--muted);
+      text-decoration: line-through;
+      font-size: 1.15rem;
+      margin-right: 4px;
+    }
+    .hero-preview-val .val-after {
+      color: var(--accent);
+      font-weight: 800;
+    }
+    .hero-preview-sub {
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    /* HEADER DASHBOARD PROFILE PILL */
+    .dash-profil-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 4px 10px;
+      border: 1.5px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      color: var(--ink);
+      text-decoration: none;
+      font-size: 0.82rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition-fast);
+    }
+    .dash-profil-link:hover {
+      background: var(--subtle);
+      color: var(--accent);
+    }
+    .dash-profil-avatar {
+      width: 24px;
+      height: 24px;
+      background: var(--accent);
+      color: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 0.75rem;
+      font-weight: 800;
+      border-radius: 2px;
+    }
+
+    /* MODUL PROFIL (#profil) */
+    .profile-card-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 20px;
+      border: 1.5px solid var(--line);
+      background: var(--surface);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+      margin-bottom: 24px;
+    }
+    .profile-avatar-large {
+      width: 64px;
+      height: 64px;
+      border-radius: var(--radius);
+      background: var(--accent);
+      color: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading);
+      font-size: 1.8rem;
+      font-weight: 800;
+      border: 2px solid var(--line);
+      flex-shrink: 0;
+    }
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 24px;
+    }
+    @media (min-width: 768px) {
+      .profile-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .profile-status {
+      padding: 12px 16px;
+      border-radius: var(--radius);
+      font-size: 0.88rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+      display: none;
+    }
+    .profile-status.status-success {
+      display: block;
+      background: #E8F5E9;
+      border: 1.5px solid #2E7D32;
+      color: #1B5E20;
+    }
+    .profile-status.status-error {
+      display: block;
+      background: var(--accent-soft);
+      border: 1.5px solid var(--accent);
+      color: var(--accent);
+    }
+
+    /* KOP CETAK LAPORAN (@media print) */
+    .kop-cetak {
+      display: none;
+    }
     @media print {
       body {
         background: #FFFFFF !important;
@@ -740,6 +958,7 @@
       .footer-actions,
       .btn,
       #viewHome,
+      #viewProfil,
       .site-nav,
       .modal-backdrop {
         display: none !important;
@@ -755,6 +974,44 @@
         border-color: #000000 !important;
         page-break-inside: avoid;
         margin-bottom: 16px;
+      }
+      #kopCetakLaporan.has-profil {
+        display: block !important;
+        border-bottom: 2px solid #000000 !important;
+        padding-bottom: 12px !important;
+        margin-bottom: 20px !important;
+      }
+      .kop-cetak-header {
+        text-align: center;
+        margin-bottom: 12px;
+      }
+      .kop-cetak-sekolah {
+        font-family: var(--font-heading);
+        font-size: 1.3rem;
+        font-weight: 800;
+        text-transform: uppercase;
+        margin-bottom: 2px;
+      }
+      .kop-cetak-title {
+        font-family: var(--font-heading);
+        font-size: 1.05rem;
+        font-weight: 700;
+        letter-spacing: 0.05em;
+      }
+      .kop-cetak-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 6px 24px;
+        font-size: 0.85rem;
+        margin-top: 10px;
+      }
+      .kop-cetak-row {
+        display: flex;
+        gap: 8px;
+      }
+      .kop-cetak-label {
+        font-weight: 700;
+        min-width: 130px;
       }
     }
   </style>
@@ -773,57 +1030,121 @@
     </div>
   </div>
 
-  <!-- INPUT FILE TERSEMBUNYI UNTUK IMPOR CSV -->
+  <!-- MODAL KONFIRMASI HAPUS SEMUA DATA APLIKASI (KONFIRMASI GANDA) -->
+  <div id="modalHapusSemua" class="modal-backdrop" style="display: none;">
+    <div class="modal-box">
+      <h3 class="modal-title" style="color: var(--accent);">Hapus Semua Data Aplikasi</h3>
+      <p class="modal-text">
+        Tindakan ini akan menghapus <strong>seluruh data siswa, konfigurasi simulator, dan profil guru</strong> yang tersimpan di peramban ini secara permanen.
+      </p>
+      <p class="modal-text" style="margin-bottom: 8px;">
+        Ketik kata <strong>HAPUS</strong> di bawah ini untuk mengonfirmasi:
+      </p>
+      <input type="text" id="inputKonfirmasiHapus" class="form-input" placeholder="Ketik HAPUS" style="margin-bottom: 16px; font-family: var(--font-mono); text-transform: uppercase;">
+      <div class="modal-actions">
+        <button id="btnBatalHapusSemua" class="btn btn-secondary" type="button">Batal</button>
+        <button id="btnEksekusiHapusSemua" class="btn btn-primary" type="button" disabled style="opacity: 0.5; cursor: not-allowed;">Hapus Semua Data</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- INPUT FILE TERSEMBUNYI UNTUK IMPOR CSV & IMPOR PROFIL JSON -->
   <input type="file" id="fileCsvInput" accept=".csv,text/csv" style="display: none;">
+  <input type="file" id="fileProfilJsonInput" accept=".json,application/json" style="display: none;">
 
   <!-- =========================================================================
-       1. HALAMAN HOME (#home)
+       1. HALAMAN HOME (#home) UNTUK SEMUA PENGUNJUNG
        ========================================================================= -->
   <section id="viewHome" style="display: none;">
     <div class="katrol-ornament"></div>
     <div class="container-editorial">
 
-      <!-- 1. Nav tipis -->
-      <nav class="site-nav" style="display: flex; justify-content: space-between; align-items: center; padding: 12px 0 24px;">
-        <a href="#home" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
-          <svg width="28" height="28" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
-            <rect width="64" height="64" rx="4" fill="#0E0E0E"/>
-            <rect x="0.5" y="0.5" width="63" height="63" rx="3.5" stroke="#262626"/>
-            <rect x="13.5" y="11" width="6.5" height="42" rx="1.8" fill="#F0EDE7"/>
-            <rect x="7" y="32" width="11" height="3" rx="1.2" fill="#4BFFA0"/>
-            <circle cx="36" cy="33" r="13" fill="#181818" stroke="#E4572E" stroke-width="3.5"/>
-            <circle cx="36" cy="33" r="7.5" stroke="#2E2E2E" stroke-width="1.6"/>
-            <circle cx="36" cy="33" r="4.2" fill="#E4572E"/>
-            <circle cx="36" cy="33" r="1.6" fill="#0E0E0E"/>
-            <path d="M 36 20 L 50.5 11.5" stroke="#E4572E" stroke-width="4.5" stroke-linecap="round"/>
-            <path d="M 44.5 9.5 L 53.5 10 L 52 19" fill="none" stroke="#E4572E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
-            <path d="M 36 46 L 50.5 54.5" stroke="#F0EDE7" stroke-width="4.5" stroke-linecap="round"/>
-            <rect x="47.5" y="50" width="8" height="8" rx="1.8" fill="#E4572E"/>
-          </svg>
-          <div style="font-family: var(--font-heading); font-size: 1.4rem; font-weight: 800; letter-spacing: -0.02em;">
-            Katrol.Lab<span style="color: var(--accent);">_</span>
+      <!-- 1. Navbar Home -->
+      <nav class="site-nav" style="padding: 14px 0 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; gap: 12px;">
+          <a href="#home" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
+            <svg width="30" height="30" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+              <rect width="64" height="64" rx="4" fill="#0E0E0E"/>
+              <rect x="0.5" y="0.5" width="63" height="63" rx="3.5" stroke="#262626"/>
+              <rect x="13.5" y="11" width="6.5" height="42" rx="1.8" fill="#F0EDE7"/>
+              <rect x="7" y="32" width="11" height="3" rx="1.2" fill="#4BFFA0"/>
+              <circle cx="36" cy="33" r="13" fill="#181818" stroke="#E4572E" stroke-width="3.5"/>
+              <circle cx="36" cy="33" r="7.5" stroke="#2E2E2E" stroke-width="1.6"/>
+              <circle cx="36" cy="33" r="4.2" fill="#E4572E"/>
+              <circle cx="36" cy="33" r="1.6" fill="#0E0E0E"/>
+              <path d="M 36 20 L 50.5 11.5" stroke="#E4572E" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M 44.5 9.5 L 53.5 10 L 52 19" fill="none" stroke="#E4572E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M 36 46 L 50.5 54.5" stroke="#F0EDE7" stroke-width="4.5" stroke-linecap="round"/>
+              <rect x="47.5" y="50" width="8" height="8" rx="1.8" fill="#E4572E"/>
+            </svg>
+            <div style="font-family: var(--font-heading); font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em;">
+              Katrol.Lab<span style="color: var(--accent);">_</span>
+            </div>
+          </a>
+
+          <!-- Desktop Links -->
+          <div class="desktop-nav-links">
+            <button type="button" class="nav-btn-link" id="linkNavCara">Cara Pakai</button>
+            <button type="button" class="nav-btn-link" id="linkNavMetode">Metode</button>
+            <a href="#profil" class="nav-btn-link">Profil</a>
+            <a href="#dashboard" class="btn btn-primary" style="margin-left: 6px;">Buka Dashboard</a>
           </div>
-        </a>
-        <div>
-          <a href="#dashboard" class="btn btn-secondary">Buka Dashboard</a>
+
+          <!-- Mobile Toggle Button -->
+          <button id="btnHomeMenuToggle" class="btn btn-secondary home-menu-toggle" type="button" aria-expanded="false" aria-controls="homeMobileNav" aria-label="Menu navigasi">
+            Menu
+          </button>
+        </div>
+
+        <!-- Mobile Menu Dropdown -->
+        <div id="homeMobileNav" class="home-mobile-nav" style="display: none;">
+          <button type="button" class="nav-btn-link" id="linkNavCaraMob">Cara Pakai</button>
+          <button type="button" class="nav-btn-link" id="linkNavMetodeMob">Metode Katrol</button>
+          <a href="#profil" class="nav-btn-link">Profil Guru</a>
+          <a href="#dashboard" class="btn btn-primary" style="text-align: center; margin-top: 4px;">Buka Dashboard</a>
         </div>
       </nav>
 
-      <!-- 2. Hero -->
+      <!-- 2. Hero Section -->
       <header class="home-hero">
         <h1 id="homeHeading" class="hero-title" tabindex="-1">
           Atur bobot, uji katrol, lihat dampaknya sebelum nilai dikunci.
         </h1>
         <p class="hero-sub">
-          Simulator penentuan bobot komponen nilai dan pengujian metode katrol rapor untuk guru SMA/SMK Indonesia tanpa instalasi dan tanpa login.
+          Simulator nilai untuk guru: tanpa login, tanpa server, data tetap di perangkatmu.
         </p>
-        <div style="display: flex; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 8px;">
           <a href="#dashboard" class="btn btn-primary">Buka Dashboard</a>
           <button id="btnHomeContoh" class="btn btn-secondary" type="button">Coba dengan data contoh</button>
         </div>
+
+        <!-- Pratinjau Statis Komparasi Sebelum vs Sesudah (HTML/CSS Murni) -->
+        <div class="hero-preview-box">
+          <div class="hero-preview-header">
+            <span style="font-family: var(--font-mono); font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: var(--muted); letter-spacing: 0.05em;">Pratinjau Dampak Simulasi</span>
+            <span class="badge badge-tuntas" style="font-size: 0.75rem;">Status: Tuntas Meningkat</span>
+          </div>
+          <div class="hero-preview-grid">
+            <div class="hero-preview-stat">
+              <div class="hero-preview-label">Jumlah Siswa Remedial</div>
+              <div class="hero-preview-val"><span class="val-before">7</span> &rarr; <span class="val-after">2</span> <small style="font-size: 0.85rem; color: var(--muted); font-weight: 600;">Siswa</small></div>
+              <div class="hero-preview-sub">5 siswa terbantu tuntas melampaui KKM 75</div>
+            </div>
+            <div class="hero-preview-stat">
+              <div class="hero-preview-label">Rata-Rata Nilai Kelas</div>
+              <div class="hero-preview-val"><span class="val-before">71,0</span> &rarr; <span class="val-after">76,0</span></div>
+              <div class="hero-preview-sub">+5,0 poin kenaikan rata-rata berbobot</div>
+            </div>
+            <div class="hero-preview-stat">
+              <div class="hero-preview-label">Rentang Capaian Nilai</div>
+              <div class="hero-preview-val"><span class="val-before">58 - 92</span> &rarr; <span class="val-after">63 - 97</span></div>
+              <div class="hero-preview-sub">Batas bawah terkerek tanpa mengurangi nilai asal</div>
+            </div>
+          </div>
+        </div>
       </header>
 
-      <!-- 3. Masalah (PRD bagian 2) -->
+      <!-- 3. Masalah (PRD bagian 2: P1-P3) -->
       <section style="margin-bottom: 32px;">
         <h2 style="font-family: var(--font-heading); font-size: 1.3rem; font-weight: 800; text-transform: uppercase; margin-bottom: 16px;">
           Latar Belakang &amp; Masalah
@@ -845,7 +1166,7 @@
       </section>
 
       <!-- 4. Cara Pakai (3 Langkah) -->
-      <section style="margin-bottom: 32px;">
+      <section id="home-cara" style="margin-bottom: 32px; scroll-margin-top: 24px;">
         <h2 style="font-family: var(--font-heading); font-size: 1.3rem; font-weight: 800; text-transform: uppercase; margin-bottom: 16px;">
           Cara Menggunakan
         </h2>
@@ -869,9 +1190,9 @@
       </section>
 
       <!-- 5. Metode Katrol & Contoh (PRD 8.5) -->
-      <section style="margin-bottom: 32px;">
+      <section id="home-metode" style="margin-bottom: 32px; scroll-margin-top: 24px;">
         <h2 style="font-family: var(--font-heading); font-size: 1.3rem; font-weight: 800; text-transform: uppercase; margin-bottom: 16px;">
-          5 Metode Katrol Standar
+          4 Metode Katrol Standar
         </h2>
         <p style="font-size: 0.88rem; color: var(--muted); margin-bottom: 16px;">
           Simulasi pada contoh nilai PH 80, PTS 70, PAS 60 dengan bobot 40/30/30 (Nilai Awal 71,0, KKM 75, Maks Kelas 90):
@@ -906,14 +1227,21 @@
           Privasi Siswa &amp; Tanggung Jawab Penilaian
         </h2>
         <p style="font-size: 0.9rem; margin-bottom: 6px;">
-          Seluruh data nilai siswa diproses secara lokal di peramban Anda dan tidak pernah dikirimkan ke server mana pun.
+          Data hanya tersimpan di browser ini.
         </p>
-        <p style="font-size: 0.9rem; color: var(--muted);">
-          Katrol.Lab adalah alat bantu simulasi pengambil keputusan, di mana penetapan nilai akhir rapor tetap sepenuhnya mengikuti kebijakan sekolah masing-masing.
+        <p style="font-size: 0.9rem; color: var(--muted); margin: 0;">
+          Alat bantu simulasi. Keputusan katrol mengikuti kebijakan sekolah.
         </p>
       </section>
 
-      <!-- 7. Footer Home -->
+      <!-- 7. CTA Penutup -->
+      <section style="text-align: center; margin: 36px 0 28px;">
+        <a href="#dashboard" class="btn btn-primary" style="padding: 12px 28px; font-size: 1rem; box-shadow: var(--shadow-btn);">
+          Buka Dashboard Sekarang &rarr;
+        </a>
+      </section>
+
+      <!-- 8. Footer Home -->
       <footer class="site-footer">
         <div class="footer-content">
           <div>
@@ -934,6 +1262,36 @@
   <section id="viewDashboard" style="display: none;">
     <div class="katrol-ornament"></div>
     <div class="container-editorial">
+
+      <!-- KOP CETAK LAPORAN RESMI (Tampil hanya pada @media print jika profil ada) -->
+      <div id="kopCetakLaporan" class="kop-cetak">
+        <div class="kop-cetak-header">
+          <div id="kopSekolah" class="kop-cetak-sekolah">SEKOLAH / INSTANSI</div>
+          <div class="kop-cetak-title">LAPORAN HASIL SIMULASI &amp; KATROL NILAI RAPOR</div>
+        </div>
+        <div class="kop-cetak-grid">
+          <div class="kop-cetak-row">
+            <span class="kop-cetak-label">Guru Pengampu</span>
+            <span>: <strong id="kopGuru">-</strong></span>
+          </div>
+          <div class="kop-cetak-row">
+            <span class="kop-cetak-label">Mata Pelajaran</span>
+            <span>: <span id="kopMapel">-</span></span>
+          </div>
+          <div class="kop-cetak-row">
+            <span class="kop-cetak-label">Kelas / Rombel</span>
+            <span>: <span id="kopKelas">-</span></span>
+          </div>
+          <div class="kop-cetak-row">
+            <span class="kop-cetak-label">Semester / T.A.</span>
+            <span>: <span id="kopTAPeriode">-</span></span>
+          </div>
+          <div class="kop-cetak-row" style="grid-column: span 2;">
+            <span class="kop-cetak-label">Tanggal Cetak</span>
+            <span>: <span id="kopTanggal">-</span></span>
+          </div>
+        </div>
+      </div>
 
       <!-- Header Dashboard -->
       <header class="app-header panel" style="margin-bottom: 24px; box-shadow: var(--shadow-btn);">
@@ -964,7 +1322,11 @@
                 Atur bobot, uji katrol, lihat dampaknya sebelum nilai dikunci.
               </p>
             </div>
-            <div class="header-actions" style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <div class="header-actions" style="display: flex; gap: 10px; flex-wrap: wrap; align-items: center;">
+              <!-- Indikator / Tautan Profil Guru di Dashboard -->
+              <div id="dashProfilContainer">
+                <a href="#profil" class="btn btn-secondary" style="padding: 4px 10px; font-size: 0.78rem;">+ Lengkapi Profil</a>
+              </div>
               <button id="btnContoh" class="btn btn-primary" type="button">Isi data contoh</button>
               <button id="btnReset" class="btn btn-secondary" type="button">Reset</button>
             </div>
@@ -1200,6 +1562,203 @@
         </div>
         <div style="font-size: 0.78rem; color: var(--muted); border-top: 1px dashed var(--border-subtle); padding-top: 10px;">
           Alat bantu simulasi. Keputusan katrol mengikuti kebijakan sekolah.
+        </div>
+      </footer>
+
+    </div>
+  </section>
+
+  <!-- =========================================================================
+       3. MODUL PROFIL GURU (#profil)
+       ========================================================================= -->
+  <section id="viewProfil" style="display: none;">
+    <div class="katrol-ornament"></div>
+    <div class="container-editorial">
+
+      <!-- Header Nav Profil -->
+      <nav class="site-nav" style="display: flex; justify-content: space-between; align-items: center; padding: 14px 0 24px; flex-wrap: wrap; gap: 12px;">
+        <a href="#home" style="display: flex; align-items: center; gap: 10px; text-decoration: none; color: inherit;">
+          <svg width="30" height="30" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink: 0;">
+            <rect width="64" height="64" rx="4" fill="#0E0E0E"/>
+            <rect x="0.5" y="0.5" width="63" height="63" rx="3.5" stroke="#262626"/>
+            <rect x="13.5" y="11" width="6.5" height="42" rx="1.8" fill="#F0EDE7"/>
+            <rect x="7" y="32" width="11" height="3" rx="1.2" fill="#4BFFA0"/>
+            <circle cx="36" cy="33" r="13" fill="#181818" stroke="#E4572E" stroke-width="3.5"/>
+            <circle cx="36" cy="33" r="7.5" stroke="#2E2E2E" stroke-width="1.6"/>
+            <circle cx="36" cy="33" r="4.2" fill="#E4572E"/>
+            <circle cx="36" cy="33" r="1.6" fill="#0E0E0E"/>
+            <path d="M 36 20 L 50.5 11.5" stroke="#E4572E" stroke-width="4.5" stroke-linecap="round"/>
+            <path d="M 44.5 9.5 L 53.5 10 L 52 19" fill="none" stroke="#E4572E" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+            <path d="M 36 46 L 50.5 54.5" stroke="#F0EDE7" stroke-width="4.5" stroke-linecap="round"/>
+            <rect x="47.5" y="50" width="8" height="8" rx="1.8" fill="#E4572E"/>
+          </svg>
+          <div style="font-family: var(--font-heading); font-size: 1.45rem; font-weight: 800; letter-spacing: -0.02em;">
+            Katrol.Lab<span style="color: var(--accent);">_</span>
+          </div>
+        </a>
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <a href="#home" class="btn btn-secondary">&larr; Beranda</a>
+          <a href="#dashboard" class="btn btn-primary">Buka Dashboard &rarr;</a>
+        </div>
+      </nav>
+
+      <!-- Profile Hero Card (Avatar & Identitas) -->
+      <div class="profile-card-header">
+        <div id="profAvatarDisplay" class="profile-avatar-large">?</div>
+        <div>
+          <h1 id="profilHeading" class="panel-title" style="font-size: 1.6rem; margin-bottom: 4px;" tabindex="-1">
+            Profil &amp; Preferensi Guru
+          </h1>
+          <p id="profSubDisplay" style="font-size: 0.9rem; color: var(--muted); margin: 0;">
+            Data disimpan lokal di peramban ini untuk kop cetak laporan dan nilai default simulator.
+          </p>
+        </div>
+      </div>
+
+      <!-- Pesan Status Inline -->
+      <div id="profStatusPesan" class="profile-status" role="status" aria-live="polite"></div>
+
+      <!-- Profile Form Panels -->
+      <div class="profile-grid">
+        
+        <!-- Panel A: Identitas Guru -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">A. Identitas Guru &amp; Kelas</h2>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="profInputNama" class="form-label">Nama Lengkap &amp; Gelar <span style="color: var(--accent);">*</span></label>
+              <input type="text" id="profInputNama" class="input-control" maxlength="60" placeholder="Contoh: Benedictus Abigail, S.Pd.">
+              <span style="font-size: 0.75rem; color: var(--muted); display: block; margin-top: 4px;">Wajib diisi (maksimal 60 karakter). Digunakan untuk kop cetak.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="profInputSekolah" class="form-label">Nama Sekolah / Instansi</label>
+              <input type="text" id="profInputSekolah" class="input-control" maxlength="80" placeholder="Contoh: SMA Negeri 1 Jakarta">
+              <span style="font-size: 0.75rem; color: var(--muted); display: block; margin-top: 4px;">Maksimal 80 karakter.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="profInputMapel" class="form-label">Mata Pelajaran</label>
+              <input type="text" id="profInputMapel" class="input-control" maxlength="60" placeholder="Contoh: Fisika / Matematika">
+              <span style="font-size: 0.75rem; color: var(--muted); display: block; margin-top: 4px;">Maksimal 60 karakter.</span>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+              <div class="form-group">
+                <label for="profInputKelas" class="form-label">Kelas / Rombel</label>
+                <input type="text" id="profInputKelas" class="input-control" maxlength="30" placeholder="Contoh: XII MIPA 2">
+                <span style="font-size: 0.75rem; color: var(--muted); display: block; margin-top: 4px;">Maks 30 karakter.</span>
+              </div>
+              <div class="form-group">
+                <label for="profInputSemester" class="form-label">Semester</label>
+                <select id="profInputSemester" class="select-control">
+                  <option value="Ganjil">Ganjil</option>
+                  <option value="Genap">Genap</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <label for="profInputTahunAjaran" class="form-label">Tahun Ajaran</label>
+              <input type="text" id="profInputTahunAjaran" class="input-control" placeholder="2026/2027">
+              <span style="font-size: 0.75rem; color: var(--muted); display: block; margin-top: 4px;">Format wajib: YYYY/YYYY (contoh: 2026/2027).</span>
+            </div>
+          </div>
+        </section>
+
+        <!-- Panel B: Preferensi Default Simulator -->
+        <section class="panel">
+          <div class="panel-header">
+            <h2 class="panel-title">B. Konfigurasi Default Simulator</h2>
+          </div>
+          <div class="panel-body">
+            <div class="form-group">
+              <label for="profInputKkm" class="form-label">KKM Standar Kelas (0 - 100)</label>
+              <input type="number" id="profInputKkm" class="input-control" min="0" max="100" value="75">
+              <span style="font-size: 0.75rem; color: var(--muted); display: block; margin-top: 4px;">Kriteria ketuntasan minimal default saat reset simulator.</span>
+            </div>
+
+            <div class="form-group">
+              <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                <label class="form-label" style="margin-bottom: 0;">Bobot Komponen Default (%)</label>
+                <span id="profIndikatorBobot" class="badge badge-tuntas">Total: 100%</span>
+              </div>
+              <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                <div>
+                  <label for="profBobotPH" style="font-size: 0.75rem; font-weight: 700; color: var(--muted); display: block; margin-bottom: 2px;">PH</label>
+                  <input type="number" id="profBobotPH" class="input-control" min="0" max="100" value="40" style="text-align: right;">
+                </div>
+                <div>
+                  <label for="profBobotPTS" style="font-size: 0.75rem; font-weight: 700; color: var(--muted); display: block; margin-bottom: 2px;">PTS</label>
+                  <input type="number" id="profBobotPTS" class="input-control" min="0" max="100" value="30" style="text-align: right;">
+                </div>
+                <div>
+                  <label for="profBobotPAS" style="font-size: 0.75rem; font-weight: 700; color: var(--muted); display: block; margin-bottom: 2px;">PAS</label>
+                  <input type="number" id="profBobotPAS" class="input-control" min="0" max="100" value="30" style="text-align: right;">
+                </div>
+              </div>
+              <span style="font-size: 0.75rem; color: var(--muted); display: block; margin-top: 4px;">Total bobot PH + PTS + PAS harus tepat 100%.</span>
+            </div>
+
+            <div class="form-group">
+              <label for="profInputMetode" class="form-label">Metode Katrol Default</label>
+              <select id="profInputMetode" class="select-control">
+                <option value="none">Tanpa katrol (nilai murni berbobot)</option>
+                <option value="tambah">Tambah poin tetap (+X)</option>
+                <option value="skalaMax">Skala ke nilai tertinggi (proporsional)</option>
+                <option value="akar">Akar kuadrat (&radic;nilai &times; 10)</option>
+                <option value="minmax">Min-max ke rentang [A, B]</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 0.88rem; font-weight: 600;">
+                <input type="checkbox" id="profInputJanganTurunkan" checked style="width: 18px; height: 18px; accent-color: var(--accent);">
+                <span>Jangan turunkan nilai (hasil katrol &ge; nilai awal)</span>
+              </label>
+              <span style="font-size: 0.75rem; color: var(--muted); display: block; margin-top: 4px;">Opsi pengaman agar siswa yang nilainya sudah tinggi tidak mengalami penurunan nilai.</span>
+            </div>
+
+            <div style="display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px;">
+              <button id="btnSimpanProfil" class="btn btn-primary" type="button">Simpan Profil</button>
+              <button id="btnTerapkanDefault" class="btn btn-secondary" type="button">Terapkan Default ke Dashboard</button>
+            </div>
+          </div>
+        </section>
+
+      </div>
+
+      <!-- Panel C: Manajemen Data, Backup & Privasi -->
+      <section class="panel" style="margin-top: 24px;">
+        <div class="panel-header">
+          <h2 class="panel-title">C. Manajemen Data &amp; Privasi</h2>
+        </div>
+        <div class="panel-body">
+          <p style="font-size: 0.9rem; color: var(--muted); margin-bottom: 16px;">
+            Profil hanya tersimpan di browser ini dan tidak dikirim ke mana pun. Anda dapat mencadangkan profil ke berkas JSON atau memulihkannya kapan saja.
+          </p>
+
+          <div style="display: flex; flex-wrap: wrap; gap: 10px;">
+            <button id="btnEksporProfil" class="btn btn-secondary" type="button">Ekspor Profil (JSON)</button>
+            <button id="btnImporProfil" class="btn btn-secondary" type="button">Impor Profil (JSON)</button>
+            <button id="btnHapusProfil" class="btn btn-secondary" type="button" style="color: var(--accent);">Hapus Profil</button>
+            <button id="btnBukaModalHapusSemua" class="btn btn-secondary" type="button" style="color: var(--accent); border-color: var(--accent);">Hapus Semua Data Aplikasi</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Footer Profil -->
+      <footer class="site-footer">
+        <div class="footer-content">
+          <div>
+            <strong>Katrol.Lab</strong> &bull; Dibuat oleh Benedictus Abigail Triwiyatno &amp; Syihabuddin Hanif
+          </div>
+          <div>
+            <a href="#dashboard" style="color: var(--ink); text-decoration: underline;">Menuju Dashboard</a> &bull;
+            <a href="#home" style="color: var(--ink); text-decoration: underline;">Kembali ke Beranda</a>
+          </div>
         </div>
       </footer>
 

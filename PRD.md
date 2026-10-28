@@ -146,6 +146,18 @@ Prioritas: **P0** = wajib, **P1** = sebaiknya ada, **P2** = bonus.
 ### FR-14 Mode Gelap (P2)
 - Mengikuti `prefers-color-scheme: dark` dengan palet gelap senada.
 
+### FR-15 Halaman Home (P0)
+- Halaman publik awal untuk seluruh pengunjung (#home) tanpa status login atau konten berbasis profil.
+- Memuat navigasi (logo, tautan Cara Pakai, Metode, Profil, tombol Buka Dashboard, dan menu HP), hero dengan subheadline, dua tombol aksi ([Buka Dashboard] dan [Coba dengan data contoh]), pratinjau komparasi statis, ringkasan masalah (P1-P3), cara pakai 3 langkah, 4 metode katrol beserta contoh hitung, klausul privasi dan etika, CTA penutup, serta footer.
+- **AC:** Navigasi hash #home bekerja dengan baik, tombol contoh langsung mengisi 12 data siswa dan mengarahkan ke dashboard, menu HP responsif dengan penutupan via Esc dan klik di luar, dan body tidak scroll horizontal pada lebar 360px.
+
+### FR-16 Profil Lokal Guru (P0)
+- Modul penyimpanan identitas dan preferensi lokal guru (#profil) di browser tanpa akun, server, atau autentikasi password.
+- Menyimpan nama guru (maks 60), sekolah (maks 80), mata pelajaran (maks 60), kelas (maks 30), tahun ajaran (format YYYY/YYYY), semester (Ganjil/Genap), serta konfigurasi default (KKM, bobot PH/PTS/PAS total 100, metode katrol default, opsi jangan turunkan nilai).
+- Menyediakan aksi Simpan Profil, Terapkan Default ke Dashboard, Ekspor/Impor JSON, Hapus Profil, dan Hapus Seluruh Data (konfirmasi ketik "HAPUS").
+- Terintegrasi dengan header dashboard (avatar inisial + nama guru), kop cetak rapor (@media print), dan inisialisasi default simulator saat pertama dibuka.
+- **AC:** Tersimpan pada localStorage key "katrollab:profile:v1", data tidak dikirim ke jaringan, input aman dari XSS, dan kop cetak otomatis menyembunyikan field yang kosong tanpa menampilkan "undefined".
+
 ## 8. Aturan Bisnis & Rumus
 
 ### 8.1 Nilai Akhir (sebelum katrol)
@@ -324,6 +336,28 @@ nama,ph,pts,pas,nilai_sebelum,nilai_sesudah,status
 ```
 
 Impor (minimal): `nama,ph,pts,pas`. Pemisah koma, header wajib.
+
+### 13.4 Profil Guru (Lokal)
+- Key: `katrollab:profile:v1`, berisi JSON data profil dan preferensi lokal.
+- Catatan: Profil ini murni disimpan di browser perangkat pengguna dan bukan merupakan akun pengguna atau sistem login (sejalan dengan Non-Goals).
+
+```js
+profile = {
+  version: 1,
+  nama: "",
+  sekolah: "",
+  mapel: "",
+  kelas: "",
+  tahunAjaran: "",
+  semester: "Ganjil", // "Ganjil" | "Genap"
+  defaults: {
+    kkm: 75,
+    bobot: { ph: 40, pts: 30, pas: 30 },
+    metode: "none",
+    janganTurunkan: true
+  }
+}
+```
 
 ## 14. Arsitektur Teknis
 
