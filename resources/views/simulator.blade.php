@@ -791,7 +791,7 @@ function simulatorApp(initialSiswa, initialSettings) {
         async simpanKeDatabase() {
             try {
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                const resp = await fetch('{{ route('api.siswa.simpan') }}', {
+                const resp = await fetch("{!! route('api.siswa.simpan') !!}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -822,7 +822,7 @@ function simulatorApp(initialSiswa, initialSettings) {
 
             try {
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-                const resp = await fetch('{{ route('api.siswa.reset') }}', {
+                const resp = await fetch("{!! route('api.siswa.reset') !!}", {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -863,7 +863,7 @@ function simulatorApp(initialSiswa, initialSettings) {
             // Kirim permintaan download via form atau fetch blob
             const form = document.createElement('form');
             form.method = 'POST';
-            form.action = '{{ route('api.ekspor.csv') }}';
+            form.action = "{!! route('api.ekspor.csv') !!}";
             form.target = '_blank';
 
             const csrfInput = document.createElement('input');
@@ -906,3 +906,4 @@ function simulatorApp(initialSiswa, initialSettings) {
 }
 </script>
 @endpush
+
