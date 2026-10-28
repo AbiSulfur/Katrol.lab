@@ -25,3 +25,4 @@ class Siswa extends Model
         'pas' => 'float',
     ];
 }
+

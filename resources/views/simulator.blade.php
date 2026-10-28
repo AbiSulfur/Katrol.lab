@@ -5,23 +5,13 @@
 @section('header_actions')
     <button 
         type="button" 
-        @click="resetKeDataContoh()" 
-        class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 shadow-hard-sm transition-spring"
-    >
-        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
-        Isi 12 Data Contoh
-    </button>
-    <button 
-        type="button" 
         @click="simpanKeDatabase()" 
-        class="inline-flex items-center px-3 py-1.5 rounded-lg text-xs font-semibold bg-slate-900 text-white dark:bg-slate-100 dark:text-slate-900 hover:bg-slate-800 dark:hover:bg-white shadow-hard-sm transition-spring"
+        class="inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition-spring"
     >
-        <svg class="w-3.5 h-3.5 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
         </svg>
-        Simpan ke DB
+        Simpan Perubahan
     </button>
 @endsection
 
@@ -51,7 +41,6 @@
         <div class="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center space-x-2">
-                    <span class="w-6 h-6 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-bold flex items-center justify-center border border-indigo-200 dark:border-indigo-800">01</span>
                     <h2 class="font-display font-bold text-base text-slate-900 dark:text-white">Standar Kelulusan &amp; Bobot</h2>
                 </div>
                 <div 
@@ -149,11 +138,7 @@
         <div class="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center space-x-2">
-                    <span class="w-6 h-6 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-bold flex items-center justify-center border border-indigo-200 dark:border-indigo-800">02</span>
                     <h2 class="font-display font-bold text-base text-slate-900 dark:text-white">Pilihan Formula Katrol</h2>
-                </div>
-                <div class="text-xs font-mono text-slate-500 dark:text-slate-400">
-                    Kalkulasi Real-time
                 </div>
             </div>
 
@@ -366,11 +351,18 @@
             
             <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                 <div class="flex items-center space-x-2">
-                    <span class="w-6 h-6 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-bold flex items-center justify-center border border-indigo-200 dark:border-indigo-800">03</span>
                     <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Lembar Nilai Komponen Siswa</h3>
                     <span class="text-xs font-mono text-slate-400" x-text="`(${daftarSiswa.length} Siswa)`"></span>
                 </div>
                 <div class="flex items-center space-x-2">
+                    <button 
+                        type="button" 
+                        @click="resetKeDataContoh()" 
+                        class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-medium transition-colors"
+                        title="Muat ulang 12 data siswa standar"
+                    >
+                        Reset Data
+                    </button>
                     <button 
                         type="button" 
                         @click="tambahSiswa()" 
@@ -450,9 +442,8 @@
             </div>
 
             <!-- Petunjuk Cepat -->
-            <div class="text-[11px] text-slate-400 dark:text-slate-500 flex items-center justify-between">
-                <span>Tips: Anda dapat langsung mengedit nilai pada kotak tabel di atas.</span>
-                <span>Tersimpan di SQLite DB saat klik Simpan</span>
+            <div class="text-[11px] text-slate-400 dark:text-slate-500">
+                Nilai dapat diedit langsung pada tabel.
             </div>
         </div>
 
@@ -463,7 +454,6 @@
             <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
                 <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
                     <div class="flex items-center space-x-2">
-                        <span class="w-6 h-6 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-bold flex items-center justify-center border border-indigo-200 dark:border-indigo-800">04</span>
                         <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Hasil Komparasi Kelulusan</h3>
                     </div>
                     <div class="flex items-center space-x-2">
@@ -807,7 +797,7 @@ function simulatorApp(initialSiswa, initialSettings) {
                 const data = await resp.json();
                 if (data.success) {
                     this.daftarSiswa = data.data;
-                    this.munculkanToast('Data siswa berhasil disimpan ke SQLite!', true);
+                    this.munculkanToast('Data siswa berhasil disimpan!', true);
                 } else {
                     this.munculkanToast('Gagal menyimpan: ' + (data.message || 'Terjadi kesalahan'), false);
                 }
@@ -818,7 +808,7 @@ function simulatorApp(initialSiswa, initialSettings) {
         },
 
         async resetKeDataContoh() {
-            if (!confirm('Kembalikan 12 data siswa standar ke SQLite?')) return;
+            if (!confirm('Kembalikan data siswa ke nilai awal?')) return;
 
             try {
                 const token = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
@@ -838,7 +828,7 @@ function simulatorApp(initialSiswa, initialSettings) {
                     this.bobot = { ph: 40, pts: 30, pas: 30 };
                     this.metode = 'none';
                     this.param = { tambah: 5, minmaxMin: 70, minmaxMax: 100 };
-                    this.munculkanToast('12 Data siswa contoh berhasil dimuat ulang!', true);
+                    this.munculkanToast('Data siswa berhasil dimuat ulang!', true);
                 }
             } catch (err) {
                 console.error(err);

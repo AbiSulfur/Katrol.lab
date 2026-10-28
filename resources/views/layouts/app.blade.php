@@ -28,9 +28,6 @@
                     <div>
                         <div class="flex items-center space-x-2">
                             <span class="font-display font-extrabold text-xl tracking-tight text-slate-900 dark:text-white">Katrol.Lab</span>
-                            <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-mono font-semibold bg-indigo-100 text-indigo-800 dark:bg-indigo-900/60 dark:text-indigo-300 border border-indigo-200 dark:border-indigo-800">
-                                Laravel 12
-                            </span>
                         </div>
                         <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">
                             Simulator Katrol &amp; Bobot Nilai Guru Indonesia
@@ -40,12 +37,6 @@
 
                 <!-- Navigation Controls -->
                 <div class="flex items-center space-x-2 sm:space-x-3">
-                    
-                    <!-- Indikator Database SQLite -->
-                    <div class="hidden md:flex items-center space-x-1.5 px-2.5 py-1 rounded-md bg-slate-100 dark:bg-slate-800 text-xs font-mono text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>SQLite DB</span>
-                    </div>
 
                     <!-- Tombol Ganti Tema (Dark / Light) -->
                     <button 
@@ -85,12 +76,12 @@
     <footer class="no-print mt-auto border-t border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 py-6 text-sm text-slate-500 dark:text-slate-400">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-2">
-                <span class="font-display font-bold text-slate-700 dark:text-slate-300">Katrol.Lab v2.0</span>
+                <span class="font-display font-bold text-slate-700 dark:text-slate-300">Katrol.Lab</span>
                 <span>&bull;</span>
-                <span>Arsitektur Laravel 12 + Tailwind CSS + Alpine.js</span>
+                <span>Simulator Katrol dan Bobot Nilai Guru Indonesia</span>
             </div>
             <div class="text-xs text-slate-400 dark:text-slate-500">
-                Penyimpanan ganda: SQLite Database &amp; LocalStorage Browser.
+                Aplikasi Pengolahan Nilai Siswa
             </div>
         </div>
     </footer>
@@ -98,3 +89,4 @@
     @stack('scripts')
 </body>
 </html>
+

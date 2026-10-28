@@ -31,3 +31,4 @@ class SimulasiKatrol extends Model
         'bobot_pas' => 'integer',
     ];
 }
+

@@ -13,7 +13,7 @@ class KatrolSimulatorTest extends TestCase
         $response = $this->get('/');
         $response->assertStatus(200);
         $response->assertSee('Katrol.Lab');
-        $response->assertSee('Laravel 12');
+        $response->assertSee('Standar Kelulusan');
         $response->assertSee('Lembar Nilai Komponen Siswa');
     }
 
@@ -81,3 +81,4 @@ class KatrolSimulatorTest extends TestCase
         $this->assertEquals(100, $validasiBenar['total']);
     }
 }
+
