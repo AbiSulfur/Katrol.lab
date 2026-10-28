@@ -3,264 +3,210 @@
 @section('title', 'Katrol.Lab - Simulator Katrol & Bobot Nilai')
 
 @section('header_actions')
-    <button 
-        type="button" 
-        @click="simpanKeDatabase()" 
-        class="inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white hover:bg-indigo-700 shadow-sm transition-spring"
+    <button
+        type="button"
+        @click="resetKeDataContoh()"
+        class="btn btn-ghost btn-sm"
+        title="Muat ulang 12 data siswa standar"
     >
-        <svg class="w-3.5 h-3.5 mr-1.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4" />
+        Reset Data
+    </button>
+    <button
+        type="button"
+        @click="simpanKeDatabase()"
+        class="btn btn-primary btn-sm"
+    >
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
         </svg>
-        Simpan Perubahan
+        Simpan
     </button>
 @endsection
 
 @section('content')
-<div x-data="simulatorApp(@js($siswa), @js($defaultSettings))" x-init="init()" class="space-y-6">
+<div x-data="simulatorApp(@js($siswa), @js($defaultSettings))" x-init="init()" style="display:flex; width:100%; height:100%; overflow:hidden;">
 
-    <!-- Notifikasi Toast -->
-    <div 
-        x-show="toast.tampil" 
-        x-transition:enter="transition ease-out duration-200"
-        x-transition:enter-start="opacity-0 transform -translate-y-2"
-        x-transition:enter-end="opacity-100 transform translate-y-0"
-        x-transition:leave="transition ease-in duration-150"
-        x-transition:leave-start="opacity-100 transform translate-y-0"
-        x-transition:leave-end="opacity-0 transform -translate-y-2"
-        class="fixed top-20 right-6 z-50 px-4 py-3 rounded-lg shadow-hard flex items-center space-x-3 text-sm font-semibold border"
-        :class="toast.sukses ? 'bg-emerald-50 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-200 border-emerald-300 dark:border-emerald-700' : 'bg-rose-50 dark:bg-rose-950 text-rose-800 dark:text-rose-200 border-rose-300 dark:border-rose-700'"
-        style="display: none;"
+    <!-- ==================================================
+         TOAST NOTIFICATION
+         ================================================== -->
+    <div
+        x-show="toast.tampil"
+        x-transition:enter="transition"
+        x-transition:enter-start="opacity-0 translate-y-2"
+        x-transition:enter-end="opacity-100 translate-y-0"
+        x-transition:leave="transition"
+        x-transition:leave-start="opacity-100 translate-y-0"
+        x-transition:leave-end="opacity-0 translate-y-2"
+        class="toast"
+        :class="toast.sukses ? 'toast-sukses' : 'toast-gagal'"
+        style="display:none;"
     >
+        <!-- dot indicator -->
+        <span style="width:7px; height:7px; border-radius:50%; background:currentColor; flex-shrink:0;"></span>
         <span x-text="toast.pesan"></span>
     </div>
 
-    <!-- BENTO ROW 1: KONTROL BOBOT & METODE KATROL -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        
-        <!-- Tile 1: Konfigurasi KKM & Bobot Komponen (5 Cols) -->
-        <div class="lg:col-span-5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <div class="flex items-center space-x-2">
-                    <h2 class="font-display font-bold text-base text-slate-900 dark:text-white">Standar Kelulusan &amp; Bobot</h2>
+    <!-- ==================================================
+         SIDEBAR — Control Panel Kiri
+         ================================================== -->
+    <aside class="sidebar no-print" style="overflow-y:auto; overflow-x:hidden;">
+
+        <!-- SECTION 1: KKM & Bobot -->
+        <div class="panel-section">
+            <div class="label-caps" style="margin-bottom:16px;">Standar Penilaian</div>
+
+            <!-- KKM -->
+            <div style="margin-bottom:20px;">
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
+                    <label style="font-size:11px; font-weight:600; color:var(--paper-dim);">KKM</label>
+                    <span style="font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--accent);" x-text="kkm"></span>
                 </div>
-                <div 
-                    class="text-xs font-mono font-semibold px-2.5 py-0.5 rounded-full border"
-                    :class="bobotTotal === 100 ? 'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-300 dark:border-emerald-800' : 'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-950/60 dark:text-rose-300 dark:border-rose-800'"
+                <!-- Quick preset -->
+                <div style="display:flex; gap:6px; margin-bottom:10px;">
+                    <template x-for="preset in [65, 70, 75, 80]">
+                        <button
+                            type="button"
+                            @click="kkm = preset"
+                            :class="kkm === preset ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm'"
+                            x-text="preset"
+                        ></button>
+                    </template>
+                </div>
+                <input
+                    type="number"
+                    min="0"
+                    max="100"
+                    x-model.number="kkm"
+                    class="inp inp-sm"
+                    placeholder="Ketik KKM (0-100)"
                 >
-                    <span x-text="`Total: ${bobotTotal}%`"></span>
-                    <span x-text="bobotTotal === 100 ? ' (Valid)' : ' (Wajib 100%)'"></span>
-                </div>
             </div>
 
-            <!-- Input KKM -->
+            <!-- Bobot Komponen -->
             <div>
-                <div class="flex items-center justify-between mb-1.5">
-                    <label for="input-kkm" class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                        Kriteria Ketuntasan Minimal (KKM)
-                    </label>
-                    <span class="text-xs font-mono font-bold text-indigo-600 dark:text-indigo-400" x-text="kkm"></span>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <input 
-                        id="input-kkm" 
-                        type="number" 
-                        min="0" 
-                        max="100" 
-                        x-model.number="kkm" 
-                        class="w-24 px-3 py-1.5 bg-slate-50 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg font-mono text-sm font-bold text-slate-900 dark:text-white focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
+                    <span style="font-size:11px; font-weight:600; color:var(--paper-dim);">Bobot Komponen</span>
+                    <span
+                        class="bobot-indicator"
+                        :class="bobotTotal === 100 ? 'bobot-valid' : 'bobot-invalid'"
                     >
-                    <!-- Preset KKM Cepat -->
-                    <div class="flex items-center space-x-1">
-                        <button type="button" @click="kkm = 70" class="px-2 py-1 text-xs rounded font-mono font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300">70</button>
-                        <button type="button" @click="kkm = 75" class="px-2 py-1 text-xs rounded font-mono font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300">75</button>
-                        <button type="button" @click="kkm = 80" class="px-2 py-1 text-xs rounded font-mono font-medium bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300">80</button>
-                    </div>
+                        <span style="width:5px; height:5px; border-radius:50%; background:currentColor;"></span>
+                        <span x-text="`${bobotTotal}%`"></span>
+                    </span>
                 </div>
-            </div>
 
-            <!-- Tiga Komponen Bobot Nilai -->
-            <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-2">
-                    Distribusi Bobot Nilai (%)
-                </label>
-                <div class="grid grid-cols-3 gap-3">
-                    <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
-                        <span class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">PH (Harian)</span>
-                        <div class="flex items-center space-x-1">
-                            <input 
-                                type="number" 
-                                min="0" 
-                                max="100" 
-                                x-model.number="bobot.ph" 
-                                class="w-full px-2 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded font-mono text-sm font-bold text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none"
-                            >
-                            <span class="text-xs text-slate-400 font-mono">%</span>
-                        </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px;">
+                    <!-- PH -->
+                    <div style="background:var(--ink-2); border:1px solid var(--ink-3); border-radius:3px; padding:10px 8px;">
+                        <div class="label-caps" style="margin-bottom:6px; color:var(--accent);">PH</div>
+                        <input type="number" min="0" max="100" x-model.number="bobot.ph" class="inp inp-sm" style="text-align:center;">
+                        <div style="font-family:var(--font-mono); font-size:9px; color:var(--paper-faint); text-align:center; margin-top:4px;">Harian</div>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
-                        <span class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">PTS (Tengah)</span>
-                        <div class="flex items-center space-x-1">
-                            <input 
-                                type="number" 
-                                min="0" 
-                                max="100" 
-                                x-model.number="bobot.pts" 
-                                class="w-full px-2 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded font-mono text-sm font-bold text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none"
-                            >
-                            <span class="text-xs text-slate-400 font-mono">%</span>
-                        </div>
+                    <!-- PTS -->
+                    <div style="background:var(--ink-2); border:1px solid var(--ink-3); border-radius:3px; padding:10px 8px;">
+                        <div class="label-caps" style="margin-bottom:6px; color:var(--tuntas);">PTS</div>
+                        <input type="number" min="0" max="100" x-model.number="bobot.pts" class="inp inp-sm" style="text-align:center;">
+                        <div style="font-family:var(--font-mono); font-size:9px; color:var(--paper-faint); text-align:center; margin-top:4px;">Tengah</div>
                     </div>
-                    <div class="p-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/80">
-                        <span class="block text-xs font-bold text-slate-500 dark:text-slate-400 mb-1">PAS (Akhir)</span>
-                        <div class="flex items-center space-x-1">
-                            <input 
-                                type="number" 
-                                min="0" 
-                                max="100" 
-                                x-model.number="bobot.pas" 
-                                class="w-full px-2 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded font-mono text-sm font-bold text-slate-900 dark:text-white focus:ring-1 focus:ring-indigo-500 focus:outline-none"
-                            >
-                            <span class="text-xs text-slate-400 font-mono">%</span>
-                        </div>
+                    <!-- PAS -->
+                    <div style="background:var(--ink-2); border:1px solid var(--ink-3); border-radius:3px; padding:10px 8px;">
+                        <div class="label-caps" style="margin-bottom:6px; color:var(--promoted);">PAS</div>
+                        <input type="number" min="0" max="100" x-model.number="bobot.pas" class="inp inp-sm" style="text-align:center;">
+                        <div style="font-family:var(--font-mono); font-size:9px; color:var(--paper-faint); text-align:center; margin-top:4px;">Akhir</div>
                     </div>
                 </div>
 
-                <!-- Visual Bar Breakdown -->
-                <div class="mt-3 w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 flex overflow-hidden">
-                    <div class="bg-indigo-500 transition-all duration-300" :style="`width: ${Math.min(100, bobot.ph)}%`" title="PH"></div>
-                    <div class="bg-sky-500 transition-all duration-300" :style="`width: ${Math.min(100, bobot.pts)}%`" title="PTS"></div>
-                    <div class="bg-amber-500 transition-all duration-300" :style="`width: ${Math.min(100, bobot.pas)}%`" title="PAS"></div>
+                <!-- Bobot bar visual — tanpa rounded, Cuberto style -->
+                <div class="bobot-bar">
+                    <div class="bobot-bar-ph" :style="`width:${Math.min(100, (bobot.ph/Math.max(bobotTotal,1))*100)}%`"></div>
+                    <div class="bobot-bar-pts" :style="`width:${Math.min(100, (bobot.pts/Math.max(bobotTotal,1))*100)}%`"></div>
+                    <div class="bobot-bar-pas" :style="`width:${Math.min(100, (bobot.pas/Math.max(bobotTotal,1))*100)}%`"></div>
+                </div>
+                <div style="display:flex; justify-content:space-between; margin-top:5px;">
+                    <span style="font-family:var(--font-mono); font-size:9px; color:var(--accent);" x-text="`PH ${bobot.ph}%`"></span>
+                    <span style="font-family:var(--font-mono); font-size:9px; color:var(--tuntas);" x-text="`PTS ${bobot.pts}%`"></span>
+                    <span style="font-family:var(--font-mono); font-size:9px; color:var(--promoted);" x-text="`PAS ${bobot.pas}%`"></span>
+                </div>
+
+                <!-- Peringatan bobot tidak valid -->
+                <div
+                    x-show="bobotTotal !== 100"
+                    style="margin-top:10px; padding:8px 10px; background:var(--remedial-dim); border:1px solid rgba(255,51,102,0.2); border-radius:3px; font-size:11px; color:var(--remedial); display:none;"
+                >
+                    Bobot harus tepat 100%. Sekarang: <strong x-text="bobotTotal + '%'"></strong>
                 </div>
             </div>
         </div>
 
-        <!-- Tile 2: Pilihan Metode Katrol & Parameter Dinamis (7 Cols) -->
-        <div class="lg:col-span-7 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <div class="flex items-center space-x-2">
-                    <h2 class="font-display font-bold text-base text-slate-900 dark:text-white">Pilihan Formula Katrol</h2>
-                </div>
-            </div>
+        <!-- SECTION 2: Metode Katrol -->
+        <div class="panel-section">
+            <div class="label-caps" style="margin-bottom:14px;">Formula Katrol</div>
 
-            <!-- Selector Metode Katrol -->
-            <div class="grid grid-cols-2 sm:grid-cols-5 gap-2">
-                <button 
-                    type="button" 
-                    @click="metode = 'none'"
-                    :class="metode === 'none' ? 'bg-indigo-600 text-white shadow-hard-sm border-indigo-600' : 'bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                    class="p-2.5 rounded-lg border text-left transition-spring"
-                >
-                    <span class="block text-xs font-bold">Murni</span>
-                    <span class="text-[10px] opacity-75 font-mono">Tanpa Katrol</span>
+            <div class="method-tabs" style="gap:6px;">
+                <button type="button" @click="metode = 'none'" class="method-tab" :class="metode === 'none' ? 'active' : ''">
+                    <span class="method-name">Tanpa Katrol</span>
+                    <span class="method-formula">Nilai murni bobot</span>
                 </button>
-                <button 
-                    type="button" 
-                    @click="metode = 'tambah'"
-                    :class="metode === 'tambah' ? 'bg-indigo-600 text-white shadow-hard-sm border-indigo-600' : 'bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                    class="p-2.5 rounded-lg border text-left transition-spring"
-                >
-                    <span class="block text-xs font-bold">+ Poin Tetap</span>
-                    <span class="text-[10px] opacity-75 font-mono">Nilai + X</span>
+                <button type="button" @click="metode = 'tambah'" class="method-tab" :class="metode === 'tambah' ? 'active' : ''">
+                    <span class="method-name">+ Poin Tetap</span>
+                    <span class="method-formula">Nilai + X</span>
                 </button>
-                <button 
-                    type="button" 
-                    @click="metode = 'skalaMax'"
-                    :class="metode === 'skalaMax' ? 'bg-indigo-600 text-white shadow-hard-sm border-indigo-600' : 'bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                    class="p-2.5 rounded-lg border text-left transition-spring"
-                >
-                    <span class="block text-xs font-bold">Skala Maks</span>
-                    <span class="text-[10px] opacity-75 font-mono">(N / Max) &times; 100</span>
+                <button type="button" @click="metode = 'skalaMax'" class="method-tab" :class="metode === 'skalaMax' ? 'active' : ''">
+                    <span class="method-name">Skala Maksimum</span>
+                    <span class="method-formula">(N / Max) x 100</span>
                 </button>
-                <button 
-                    type="button" 
-                    @click="metode = 'akar'"
-                    :class="metode === 'akar' ? 'bg-indigo-600 text-white shadow-hard-sm border-indigo-600' : 'bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                    class="p-2.5 rounded-lg border text-left transition-spring"
-                >
-                    <span class="block text-xs font-bold">Akar Kuadrat</span>
-                    <span class="text-[10px] opacity-75 font-mono">&radic;N &times; 10</span>
+                <button type="button" @click="metode = 'akar'" class="method-tab" :class="metode === 'akar' ? 'active' : ''">
+                    <span class="method-name">Akar Kuadrat</span>
+                    <span class="method-formula">sqrt(N) x 10</span>
                 </button>
-                <button 
-                    type="button" 
-                    @click="metode = 'minmax'"
-                    :class="metode === 'minmax' ? 'bg-indigo-600 text-white shadow-hard-sm border-indigo-600' : 'bg-slate-50 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800'"
-                    class="p-2.5 rounded-lg border text-left transition-spring col-span-2 sm:col-span-1"
-                >
-                    <span class="block text-xs font-bold">Min-Max</span>
-                    <span class="text-[10px] opacity-75 font-mono">Rentang [A, B]</span>
+                <button type="button" @click="metode = 'minmax'" class="method-tab" :class="metode === 'minmax' ? 'active' : ''">
+                    <span class="method-name">Min-Max</span>
+                    <span class="method-formula">Rentang [A, B]</span>
                 </button>
             </div>
 
-            <!-- Parameter Dinamis Sesuai Metode -->
-            <div class="p-3.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700/80 text-xs text-slate-600 dark:text-slate-300">
+            <!-- Parameter Dinamis -->
+            <div style="margin-top:14px;">
                 <template x-if="metode === 'none'">
-                    <div>
-                        <strong class="text-slate-900 dark:text-white">Tanpa Katrol:</strong>
-                        Nilai akhir murni dihitung murni dari persentase bobot PH (<span x-text="bobot.ph"></span>%), PTS (<span x-text="bobot.pts"></span>%), dan PAS (<span x-text="bobot.pas"></span>%).
+                    <div style="font-size:11px; color:var(--paper-faint); line-height:1.6;">
+                        Nilai akhir dihitung murni dari bobot komponen. Tidak ada katrol diterapkan.
                     </div>
                 </template>
 
                 <template x-if="metode === 'tambah'">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-                        <div>
-                            <strong class="text-slate-900 dark:text-white">Tambah Poin Tetap (+X):</strong>
-                            Setiap siswa mendapat tambahan poin yang sama. Nilai dibatasi maksimal 100.
-                        </div>
-                        <div class="flex items-center space-x-2 shrink-0">
-                            <label for="param-tambah" class="font-bold text-slate-700 dark:text-slate-200">Bonus:</label>
-                            <input 
-                                id="param-tambah" 
-                                type="number" 
-                                min="1" 
-                                max="50" 
-                                x-model.number="param.tambah" 
-                                class="w-20 px-2.5 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded font-mono font-bold text-slate-900 dark:text-white focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                            >
-                            <span class="font-mono text-slate-400">Poin</span>
+                    <div>
+                        <div style="font-size:11px; color:var(--paper-faint); margin-bottom:10px; line-height:1.6;">Tambahkan poin yang sama ke semua siswa. Dibatasi maksimal 100.</div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                            <label class="label-caps">Bonus:</label>
+                            <input id="param-tambah" type="number" min="1" max="50" x-model.number="param.tambah" class="inp inp-sm" style="width:80px;">
+                            <span style="font-family:var(--font-mono); font-size:11px; color:var(--paper-faint);">poin</span>
                         </div>
                     </div>
                 </template>
 
                 <template x-if="metode === 'skalaMax'">
-                    <div>
-                        <strong class="text-slate-900 dark:text-white">Skala Maksimum:</strong>
-                        Nilai tertinggi di kelas dijadikan 100. Nilai siswa lainnya dinaikkan sebanding secara proporsional.
+                    <div style="font-size:11px; color:var(--paper-faint); line-height:1.6;">
+                        Nilai tertinggi di kelas dijadikan 100. Siswa lain dinaikkan secara proporsional.
                     </div>
                 </template>
 
                 <template x-if="metode === 'akar'">
-                    <div>
-                        <strong class="text-slate-900 dark:text-white">Akar Kuadrat (&radic;Nilai &times; 10):</strong>
-                        Formula non-linear yang memberikan persentase kenaikan lebih signifikan kepada siswa berkemampuan awal rendah.
+                    <div style="font-size:11px; color:var(--paper-faint); line-height:1.6;">
+                        Formula non-linear. Siswa berkemampuan rendah mendapat kenaikan lebih signifikan.
                     </div>
                 </template>
 
                 <template x-if="metode === 'minmax'">
-                    <div class="space-y-2">
-                        <div>
-                            <strong class="text-slate-900 dark:text-white">Transformasi Min-Max:</strong>
-                            Memetakan sebaran nilai terendah dan tertinggi kelas ke dalam target interval [A, B].
-                        </div>
-                        <div class="flex items-center space-x-4">
-                            <div class="flex items-center space-x-2">
-                                <label class="font-bold text-slate-700 dark:text-slate-200">Target Min (A):</label>
-                                <input 
-                                    type="number" 
-                                    min="0" 
-                                    max="100" 
-                                    x-model.number="param.minmaxMin" 
-                                    class="w-16 px-2 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded font-mono font-bold text-slate-900 dark:text-white"
-                                >
+                    <div>
+                        <div style="font-size:11px; color:var(--paper-faint); margin-bottom:10px; line-height:1.6;">Petakan sebaran nilai ke interval target [A, B].</div>
+                        <div style="display:flex; gap:12px;">
+                            <div>
+                                <label class="label-caps" style="display:block; margin-bottom:5px;">Target Min (A)</label>
+                                <input type="number" min="0" max="100" x-model.number="param.minmaxMin" class="inp inp-sm" style="width:70px;">
                             </div>
-                            <div class="flex items-center space-x-2">
-                                <label class="font-bold text-slate-700 dark:text-slate-200">Target Max (B):</label>
-                                <input 
-                                    type="number" 
-                                    min="0" 
-                                    max="100" 
-                                    x-model.number="param.minmaxMax" 
-                                    class="w-16 px-2 py-1 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded font-mono font-bold text-slate-900 dark:text-white"
-                                >
+                            <div>
+                                <label class="label-caps" style="display:block; margin-bottom:5px;">Target Max (B)</label>
+                                <input type="number" min="0" max="100" x-model.number="param.minmaxMax" class="inp inp-sm" style="width:70px;">
                             </div>
                         </div>
                     </div>
@@ -268,277 +214,224 @@
             </div>
         </div>
 
-    </div>
-
-    <!-- BENTO ROW 2: 4 KARTU METRIK DAMPAK -->
-    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        
-        <!-- Metric 1: Siswa Remedial -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm relative overflow-hidden">
-            <span class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Siswa Remedial
-            </span>
-            <div class="mt-2 flex items-baseline space-x-2">
-                <span class="text-lg font-mono line-through text-slate-400" x-text="stats.remedialSebelum"></span>
-                <span class="text-slate-400 font-bold">&rarr;</span>
-                <span class="text-2xl sm:text-3xl font-mono font-black text-rose-600 dark:text-rose-400" x-text="stats.remedialSesudah"></span>
-                <span class="text-xs text-slate-400">Siswa</span>
+        <!-- SECTION 3: Aksi -->
+        <div class="panel-section" style="margin-top:auto;">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <button type="button" @click="eksporCSV()" class="btn btn-ghost" style="width:100%; justify-content:center;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                    Ekspor CSV
+                </button>
+                <button type="button" @click="window.print()" class="btn btn-ghost" style="width:100%; justify-content:center;">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                    Cetak Laporan
+                </button>
             </div>
-            <div class="mt-2 flex items-center">
-                <span 
-                    class="inline-flex items-center px-2 py-0.5 rounded text-[11px] font-bold"
-                    :class="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400'"
-                >
-                    <span x-text="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? `Turun ${stats.remedialSebelum - stats.remedialSesudah} Siswa` : 'Tidak Ada Perubahan'"></span>
-                </span>
+            <div style="margin-top:16px; font-size:10px; color:var(--paper-faint); text-align:center; line-height:1.5;">
+                Data tersimpan di database ini saja
             </div>
         </div>
 
-        <!-- Metric 2: Rata-Rata Kelas -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
-            <span class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Rata-Rata Nilai
-            </span>
-            <div class="mt-2 flex items-baseline space-x-2">
-                <span class="text-lg font-mono line-through text-slate-400" x-text="stats.rataSebelum"></span>
-                <span class="text-slate-400 font-bold">&rarr;</span>
-                <span class="text-2xl sm:text-3xl font-mono font-black text-indigo-600 dark:text-indigo-400" x-text="stats.rataSesudah"></span>
-            </div>
-            <div class="mt-2 flex items-center">
-                <span class="text-xs font-mono font-semibold text-indigo-600 dark:text-indigo-400">
-                    <span x-text="`Selisih: +${(stats.rataSesudah - stats.rataSebelum).toFixed(1)} poin`"></span>
-                </span>
-            </div>
-        </div>
+    </aside>
 
-        <!-- Metric 3: Nilai Tertinggi -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
-            <span class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Nilai Tertinggi
-            </span>
-            <div class="mt-2 flex items-baseline space-x-2">
-                <span class="text-lg font-mono line-through text-slate-400" x-text="stats.tertinggiSebelum"></span>
-                <span class="text-slate-400 font-bold">&rarr;</span>
-                <span class="text-2xl sm:text-3xl font-mono font-black text-slate-900 dark:text-white" x-text="stats.tertinggiSesudah"></span>
-            </div>
-            <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                Puncak capaian kelas
-            </div>
-        </div>
+    <!-- ==================================================
+         WORKSPACE — Area utama kanan
+         ================================================== -->
+    <main class="workspace" style="overflow-y:auto; overflow-x:hidden;">
+        <div style="padding:24px; max-width:1280px;">
 
-        <!-- Metric 4: Nilai Terendah -->
-        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-4 shadow-sm">
-            <span class="block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
-                Nilai Terendah
-            </span>
-            <div class="mt-2 flex items-baseline space-x-2">
-                <span class="text-lg font-mono line-through text-slate-400" x-text="stats.terendahSebelum"></span>
-                <span class="text-slate-400 font-bold">&rarr;</span>
-                <span class="text-2xl sm:text-3xl font-mono font-black text-slate-900 dark:text-white" x-text="stats.terendahSesudah"></span>
-            </div>
-            <div class="mt-2 text-xs text-slate-500 dark:text-slate-400">
-                Batas bawah setelah katrol
-            </div>
-        </div>
+            <!-- ============================================
+                 ROW 1: 4 METRIC CARDS
+                 ============================================ -->
+            <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:24px;">
 
-    </div>
-
-    <!-- BENTO ROW 3: DUAL SPLIT LEDGER (INPUT SISWA VS HASIL & CHART) -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-        
-        <!-- Kolom Kiri: Lembar Data Siswa Editable (6 Cols) -->
-        <div class="lg:col-span-6 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
-            
-            <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                <div class="flex items-center space-x-2">
-                    <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Lembar Nilai Komponen Siswa</h3>
-                    <span class="text-xs font-mono text-slate-400" x-text="`(${daftarSiswa.length} Siswa)`"></span>
-                </div>
-                <div class="flex items-center space-x-2">
-                    <button 
-                        type="button" 
-                        @click="resetKeDataContoh()" 
-                        class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-medium transition-colors"
-                        title="Muat ulang 12 data siswa standar"
-                    >
-                        Reset Data
-                    </button>
-                    <button 
-                        type="button" 
-                        @click="tambahSiswa()" 
-                        class="px-2.5 py-1 rounded bg-slate-100 dark:bg-slate-800 text-slate-800 dark:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-700 text-xs font-bold transition-colors inline-flex items-center"
-                    >
-                        <span class="mr-1 font-mono text-sm">+</span> Siswa
-                    </button>
-                </div>
-            </div>
-
-            <!-- Tabel Siswa Input -->
-            <div class="overflow-x-auto max-h-[460px] overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-lg">
-                <table class="w-full text-left text-xs border-collapse">
-                    <thead class="sticky top-0 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 font-mono uppercase text-[11px] border-b border-slate-200 dark:border-slate-700 z-10">
-                        <tr>
-                            <th class="py-2.5 px-3 w-10 text-center">No</th>
-                            <th class="py-2.5 px-3">Nama Siswa</th>
-                            <th class="py-2.5 px-2 w-16 text-right">PH</th>
-                            <th class="py-2.5 px-2 w-16 text-right">PTS</th>
-                            <th class="py-2.5 px-2 w-16 text-right">PAS</th>
-                            <th class="py-2.5 px-2 w-12 text-center">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-100 dark:divide-slate-800 font-mono">
-                        <template x-for="(s, index) in daftarSiswa" :key="s.id || index">
-                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40 transition-colors">
-                                <td class="py-2 px-3 text-center text-slate-400 font-bold" x-text="index + 1"></td>
-                                <td class="py-1 px-2 font-sans">
-                                    <input 
-                                        type="text" 
-                                        x-model="s.nama" 
-                                        placeholder="Nama Siswa"
-                                        class="w-full px-2 py-1 bg-transparent hover:bg-white dark:hover:bg-slate-800 border border-transparent focus:border-indigo-500 rounded text-xs text-slate-900 dark:text-slate-100 focus:outline-none"
-                                    >
-                                </td>
-                                <td class="py-1 px-1">
-                                    <input 
-                                        type="number" 
-                                        min="0" 
-                                        max="100" 
-                                        x-model.number="s.ph" 
-                                        class="w-16 px-1.5 py-1 bg-transparent hover:bg-white dark:hover:bg-slate-800 border border-transparent focus:border-indigo-500 rounded text-xs text-right text-slate-900 dark:text-slate-100 focus:outline-none"
-                                    >
-                                </td>
-                                <td class="py-1 px-1">
-                                    <input 
-                                        type="number" 
-                                        min="0" 
-                                        max="100" 
-                                        x-model.number="s.pts" 
-                                        class="w-16 px-1.5 py-1 bg-transparent hover:bg-white dark:hover:bg-slate-800 border border-transparent focus:border-indigo-500 rounded text-xs text-right text-slate-900 dark:text-slate-100 focus:outline-none"
-                                    >
-                                </td>
-                                <td class="py-1 px-1">
-                                    <input 
-                                        type="number" 
-                                        min="0" 
-                                        max="100" 
-                                        x-model.number="s.pas" 
-                                        class="w-16 px-1.5 py-1 bg-transparent hover:bg-white dark:hover:bg-slate-800 border border-transparent focus:border-indigo-500 rounded text-xs text-right text-slate-900 dark:text-slate-100 focus:outline-none"
-                                    >
-                                </td>
-                                <td class="py-1 px-2 text-center">
-                                    <button 
-                                        type="button" 
-                                        @click="hapusSiswa(index)" 
-                                        class="text-rose-500 hover:text-rose-700 p-1 rounded hover:bg-rose-50 dark:hover:bg-rose-950 transition-colors"
-                                        title="Hapus baris"
-                                    >
-                                        &times;
-                                    </button>
-                                </td>
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
-            </div>
-
-            <!-- Petunjuk Cepat -->
-            <div class="text-[11px] text-slate-400 dark:text-slate-500">
-                Nilai dapat diedit langsung pada tabel.
-            </div>
-        </div>
-
-        <!-- Kolom Kanan: Hasil Komparasi & Visualisasi Chart (6 Cols) -->
-        <div class="lg:col-span-6 space-y-6">
-            
-            <!-- Card Tabel Komparasi Hasil -->
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-4">
-                <div class="flex items-center justify-between pb-3 border-b border-slate-100 dark:border-slate-800">
-                    <div class="flex items-center space-x-2">
-                        <h3 class="font-display font-bold text-base text-slate-900 dark:text-white">Hasil Komparasi Kelulusan</h3>
+                <!-- Metric: Remedial -->
+                <div class="metric-tile" :class="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? 'has-change' : ''">
+                    <div class="label-caps" style="margin-bottom:12px;">Siswa Remedial</div>
+                    <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
+                        <span style="font-family:var(--font-mono); font-size:18px; font-weight:600; color:var(--paper-faint); text-decoration:line-through;" x-text="stats.remedialSebelum"></span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--paper-faint); flex-shrink:0;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        <span class="stat-number" style="color:var(--remedial);" x-text="stats.remedialSesudah"></span>
                     </div>
-                    <div class="flex items-center space-x-2">
-                        <button 
-                            type="button" 
-                            @click="eksporCSV()" 
-                            class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold inline-flex items-center"
-                        >
-                            Ekspor CSV
-                        </button>
-                        <button 
-                            type="button" 
-                            @click="window.print()" 
-                            class="px-2.5 py-1 rounded bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold inline-flex items-center"
-                        >
-                            Cetak
-                        </button>
+                    <div style="margin-top:10px;">
+                        <span
+                            class="badge"
+                            :class="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? 'badge-tuntas' : 'badge-remedial'"
+                            x-text="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? `Turun ${stats.remedialSebelum - stats.remedialSesudah} siswa` : 'Tidak ada perubahan'"
+                        ></span>
                     </div>
                 </div>
 
-                <div class="overflow-x-auto max-h-[260px] overflow-y-auto border border-slate-200 dark:border-slate-800 rounded-lg">
-                    <table class="w-full text-left text-xs border-collapse font-mono">
-                        <thead class="sticky top-0 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 uppercase text-[11px] border-b border-slate-200 dark:border-slate-700 z-10">
-                            <tr>
-                                <th class="py-2 px-3 w-8 text-center">No</th>
-                                <th class="py-2 px-3">Nama</th>
-                                <th class="py-2 px-2 text-right">Awal</th>
-                                <th class="py-2 px-2 text-center">Status</th>
-                                <th class="py-2 px-2 text-right">Katrol</th>
-                                <th class="py-2 px-2 text-center">Status</th>
-                                <th class="py-2 px-2 text-right">Selisih</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-100 dark:divide-slate-800">
-                            <template x-for="(item, idx) in hasilKomparasi" :key="item.id || idx">
-                                <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/40">
-                                    <td class="py-1.5 px-3 text-center text-slate-400" x-text="idx + 1"></td>
-                                    <td class="py-1.5 px-3 font-sans font-medium text-slate-800 dark:text-slate-200 truncate max-w-[140px]" x-text="item.nama"></td>
-                                    <td class="py-1.5 px-2 text-right text-slate-600 dark:text-slate-400 font-bold" x-text="item.nilaiAwal.toFixed(1)"></td>
-                                    <td class="py-1.5 px-2 text-center">
-                                        <span 
-                                            class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold"
-                                            :class="item.nilaiAwal >= kkm ? 'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-200' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'"
-                                            x-text="item.nilaiAwal >= kkm ? 'Tuntas' : 'Remedial'"
-                                        ></span>
-                                    </td>
-                                    <td class="py-1.5 px-2 text-right font-black text-indigo-600 dark:text-indigo-400" x-text="item.nilaiKatrol.toFixed(1)"></td>
-                                    <td class="py-1.5 px-2 text-center">
-                                        <span 
-                                            class="inline-block px-1.5 py-0.5 rounded text-[10px] font-bold"
-                                            :class="item.nilaiKatrol >= kkm ? 'bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300' : 'bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300'"
-                                            x-text="item.nilaiKatrol >= kkm ? 'Tuntas' : 'Remedial'"
-                                        ></span>
-                                    </td>
-                                    <td class="py-1.5 px-2 text-right font-bold" :class="item.selisih > 0 ? 'text-indigo-600 dark:text-indigo-400' : 'text-slate-400'">
-                                        <span x-text="`${item.selisih >= 0 ? '+' : ''}${item.selisih.toFixed(1)}`"></span>
-                                    </td>
+                <!-- Metric: Rata-rata -->
+                <div class="metric-tile" :class="(parseFloat(stats.rataSesudah) - parseFloat(stats.rataSebelum)) > 0 ? 'has-change' : ''">
+                    <div class="label-caps" style="margin-bottom:12px;">Rata-Rata Kelas</div>
+                    <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
+                        <span style="font-family:var(--font-mono); font-size:18px; font-weight:600; color:var(--paper-faint); text-decoration:line-through;" x-text="stats.rataSebelum"></span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--paper-faint); flex-shrink:0;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        <span class="stat-number" style="color:var(--paper);" x-text="stats.rataSesudah"></span>
+                    </div>
+                    <div style="margin-top:10px;">
+                        <span class="badge badge-promoted" x-text="`+${(parseFloat(stats.rataSesudah) - parseFloat(stats.rataSebelum)).toFixed(1)} poin`"></span>
+                    </div>
+                </div>
+
+                <!-- Metric: Tertinggi -->
+                <div class="metric-tile">
+                    <div class="label-caps" style="margin-bottom:12px;">Nilai Tertinggi</div>
+                    <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
+                        <span style="font-family:var(--font-mono); font-size:18px; font-weight:600; color:var(--paper-faint); text-decoration:line-through;" x-text="stats.tertinggiSebelum"></span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--paper-faint); flex-shrink:0;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        <span class="stat-number" x-text="stats.tertinggiSesudah"></span>
+                    </div>
+                    <div style="margin-top:10px; font-size:11px; color:var(--paper-faint);">Puncak capaian kelas</div>
+                </div>
+
+                <!-- Metric: Terendah -->
+                <div class="metric-tile">
+                    <div class="label-caps" style="margin-bottom:12px;">Nilai Terendah</div>
+                    <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
+                        <span style="font-family:var(--font-mono); font-size:18px; font-weight:600; color:var(--paper-faint); text-decoration:line-through;" x-text="stats.terendahSebelum"></span>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--paper-faint); flex-shrink:0;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                        <span class="stat-number" x-text="stats.terendahSesudah"></span>
+                    </div>
+                    <div style="margin-top:10px; font-size:11px; color:var(--paper-faint);">Batas bawah setelah katrol</div>
+                </div>
+            </div>
+
+            <!-- ============================================
+                 ROW 2: LEDGER SISWA + HASIL KOMPARASI
+                 ============================================ -->
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
+
+                <!-- Kolom kiri: Input siswa -->
+                <div class="tile" style="padding:0;">
+                    <!-- Header tile -->
+                    <div style="padding:16px 20px; border-bottom:1px solid var(--ink-3); display:flex; align-items:center; justify-content:space-between;">
+                        <div>
+                            <div style="font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--paper);">Lembar Nilai Komponen</div>
+                            <div class="label-caps" style="margin-top:2px;" x-text="`${daftarSiswa.length} siswa`"></div>
+                        </div>
+                        <div style="display:flex; gap:6px;">
+                            <button type="button" @click="tambahSiswa()" class="btn btn-ghost btn-sm">
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                                Siswa
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tabel siswa editable -->
+                    <div style="max-height:460px; overflow-y:auto; overflow-x:auto;">
+                        <table class="ledger">
+                            <thead>
+                                <tr>
+                                    <th style="width:36px; text-align:center;">#</th>
+                                    <th>Nama</th>
+                                    <th style="width:60px; text-align:right;">PH</th>
+                                    <th style="width:60px; text-align:right;">PTS</th>
+                                    <th style="width:60px; text-align:right;">PAS</th>
+                                    <th style="width:36px; text-align:center;"></th>
                                 </tr>
-                            </template>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- Card Visualisasi Grafik Sebaran Nilai -->
-            <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm space-y-3">
-                <div class="flex items-center justify-between pb-2 border-b border-slate-100 dark:border-slate-800">
-                    <div>
-                        <h4 class="font-display font-bold text-sm text-slate-900 dark:text-white">Sebaran Distribusi Frekuensi Nilai</h4>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Komparasi jumlah siswa pada tiap kelompok interval nilai</p>
+                            </thead>
+                            <tbody>
+                                <template x-for="(s, index) in daftarSiswa" :key="s.id || index">
+                                    <tr>
+                                        <td style="text-align:center; color:var(--paper-faint); font-size:11px;" x-text="index + 1"></td>
+                                        <td style="padding:6px 12px;">
+                                            <input type="text" x-model="s.nama" placeholder="Nama siswa" class="ledger-input" style="font-family:var(--font-sans); font-size:12px;">
+                                        </td>
+                                        <td style="padding:6px 4px;">
+                                            <input type="number" min="0" max="100" x-model.number="s.ph" class="ledger-input" style="text-align:right; width:55px;">
+                                        </td>
+                                        <td style="padding:6px 4px;">
+                                            <input type="number" min="0" max="100" x-model.number="s.pts" class="ledger-input" style="text-align:right; width:55px;">
+                                        </td>
+                                        <td style="padding:6px 4px;">
+                                            <input type="number" min="0" max="100" x-model.number="s.pas" class="ledger-input" style="text-align:right; width:55px;">
+                                        </td>
+                                        <td style="text-align:center; padding:6px 4px;">
+                                            <button type="button" @click="hapusSiswa(index)" style="color:var(--paper-faint); background:none; border:none; cursor:pointer; padding:4px; border-radius:2px; transition:color 0.12s;" onmouseover="this.style.color='var(--remedial)'" onmouseout="this.style.color='var(--paper-faint)'" title="Hapus baris">
+                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
-                <div class="relative h-56 w-full">
+
+                <!-- Kolom kanan: Hasil komparasi -->
+                <div class="tile" style="padding:0;">
+                    <div style="padding:16px 20px; border-bottom:1px solid var(--ink-3); display:flex; align-items:center; justify-content:space-between;">
+                        <div>
+                            <div style="font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--paper);">Hasil Komparasi Kelulusan</div>
+                            <div class="label-caps" style="margin-top:2px;">Sebelum vs sesudah katrol</div>
+                        </div>
+                    </div>
+
+                    <!-- Peringatan bobot tidak valid -->
+                    <div x-show="bobotTotal !== 100" style="padding:12px 20px; background:var(--remedial-dim); border-bottom:1px solid rgba(255,51,102,0.2); font-size:12px; color:var(--remedial); display:none;">
+                        Perbaiki bobot nilai agar total 100% sebelum kalkulasi dapat ditampilkan.
+                    </div>
+
+                    <div x-show="bobotTotal === 100" style="max-height:460px; overflow-y:auto; overflow-x:auto;">
+                        <table class="ledger">
+                            <thead>
+                                <tr>
+                                    <th style="width:28px; text-align:center;">#</th>
+                                    <th>Nama</th>
+                                    <th style="width:52px; text-align:right;">Awal</th>
+                                    <th style="width:64px; text-align:center;">Status</th>
+                                    <th style="width:52px; text-align:right;">Katrol</th>
+                                    <th style="width:64px; text-align:center;">Status</th>
+                                    <th style="width:48px; text-align:right;">Delta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template x-for="(item, idx) in hasilKomparasi" :key="item.id || idx">
+                                    <tr>
+                                        <td style="text-align:center; color:var(--paper-faint); font-size:11px;" x-text="idx + 1"></td>
+                                        <td style="font-family:var(--font-sans); font-weight:500; color:var(--paper); font-size:12px; max-width:130px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" x-text="item.nama"></td>
+                                        <td style="text-align:right; color:var(--paper-dim);" x-text="item.nilaiAwal.toFixed(1)"></td>
+                                        <td style="text-align:center;">
+                                            <span class="badge" :class="item.nilaiAwal >= kkm ? 'badge-tuntas' : 'badge-remedial'" x-text="item.nilaiAwal >= kkm ? 'Tuntas' : 'Remedial'"></span>
+                                        </td>
+                                        <td style="text-align:right; font-weight:700; color:var(--paper);" x-text="item.nilaiKatrol.toFixed(1)"></td>
+                                        <td style="text-align:center;">
+                                            <span class="badge" :class="item.nilaiKatrol >= kkm ? 'badge-tuntas' : 'badge-remedial'" x-text="item.nilaiKatrol >= kkm ? 'Tuntas' : 'Remedial'"></span>
+                                        </td>
+                                        <td style="text-align:right; font-size:12px;" :style="item.selisih > 0 ? 'color:var(--tuntas)' : item.selisih < 0 ? 'color:var(--remedial)' : 'color:var(--paper-faint)'">
+                                            <span x-text="`${item.selisih >= 0 ? '+' : ''}${item.selisih.toFixed(1)}`"></span>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- ============================================
+                 ROW 3: GRAFIK DISTRIBUSI
+                 ============================================ -->
+            <div class="tile" style="padding:0;">
+                <div style="padding:16px 20px; border-bottom:1px solid var(--ink-3);">
+                    <div style="font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--paper);">Sebaran Distribusi Frekuensi Nilai</div>
+                    <div class="label-caps" style="margin-top:2px;">Komparasi jumlah siswa per kelompok interval</div>
+                </div>
+                <div style="padding:20px; position:relative; height:240px;">
                     <canvas id="chartBentoSebaran"></canvas>
                 </div>
             </div>
 
         </div>
-
-    </div>
+    </main>
 
 </div>
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 <script>
 function simulatorApp(initialSiswa, initialSettings) {
     return {
@@ -563,7 +456,6 @@ function simulatorApp(initialSiswa, initialSettings) {
         chartObj: null,
 
         init() {
-            // Watchers untuk kalkulasi ulang dan update chart saat ada perubahan
             this.$watch('daftarSiswa', () => this.refreshGrafik());
             this.$watch('kkm', () => this.refreshGrafik());
             this.$watch('bobot.ph', () => this.refreshGrafik());
@@ -614,7 +506,6 @@ function simulatorApp(initialSiswa, initialSettings) {
                 const rentang = (maxAsal - minAsal) || 1;
                 res = minTarget + ((nilai - minAsal) / rentang) * (maxTarget - minTarget);
             }
-            // Clamp 0 - 100
             const clamped = Math.min(100, Math.max(0, res));
             return Math.round(clamped * 10) / 10;
         },
@@ -715,18 +606,18 @@ function simulatorApp(initialSiswa, initialSettings) {
                         {
                             label: 'Sebelum Katrol',
                             data: binsSebelum,
-                            backgroundColor: '#64748B',
-                            borderColor: '#475569',
+                            backgroundColor: 'rgba(64, 48, 48, 0.9)',
+                            borderColor: 'rgba(88, 84, 80, 1)',
                             borderWidth: 1,
-                            borderRadius: 4
+                            borderRadius: 0
                         },
                         {
                             label: 'Sesudah Katrol',
                             data: binsSesudah,
-                            backgroundColor: '#4F46E5',
-                            borderColor: '#4338CA',
+                            backgroundColor: 'rgba(255, 77, 0, 0.8)',
+                            borderColor: 'rgba(255, 77, 0, 1)',
                             borderWidth: 1,
-                            borderRadius: 4
+                            borderRadius: 0
                         }
                     ]
                 },
@@ -736,12 +627,17 @@ function simulatorApp(initialSiswa, initialSettings) {
                     plugins: {
                         legend: {
                             position: 'top',
+                            align: 'start',
                             labels: {
-                                boxWidth: 12,
+                                boxWidth: 10,
+                                boxHeight: 10,
+                                borderRadius: 0,
+                                color: '#A8A39A',
                                 font: {
                                     family: "'JetBrains Mono', monospace",
                                     size: 11
-                                }
+                                },
+                                padding: 16
                             }
                         }
                     },
@@ -750,12 +646,13 @@ function simulatorApp(initialSiswa, initialSettings) {
                             beginAtZero: true,
                             ticks: {
                                 stepSize: 1,
-                                font: { family: "'JetBrains Mono', monospace" }
+                                color: '#585450',
+                                font: { family: "'JetBrains Mono', monospace", size: 11 }
                             },
-                            grid: { color: 'rgba(148, 163, 184, 0.15)' }
+                            grid: { color: 'rgba(36, 36, 36, 1)' }
                         },
                         x: {
-                            ticks: { font: { family: "'JetBrains Mono', monospace" } },
+                            ticks: { color: '#585450', font: { family: "'JetBrains Mono', monospace", size: 11 } },
                             grid: { display: false }
                         }
                     }
@@ -850,7 +747,6 @@ function simulatorApp(initialSiswa, initialSettings) {
                 selisih: item.selisih
             }));
 
-            // Kirim permintaan download via form atau fetch blob
             const form = document.createElement('form');
             form.method = 'POST';
             form.action = "{!! route('api.ekspor.csv') !!}";
@@ -868,7 +764,6 @@ function simulatorApp(initialSiswa, initialSettings) {
             dataInput.value = JSON.stringify(dataToExport);
             form.appendChild(dataInput);
 
-            // Append input baris satu per satu agar diparsing array oleh Laravel
             dataToExport.forEach((row, i) => {
                 Object.keys(row).forEach(k => {
                     const input = document.createElement('input');
@@ -896,4 +791,3 @@ function simulatorApp(initialSiswa, initialSettings) {
 }
 </script>
 @endpush
-

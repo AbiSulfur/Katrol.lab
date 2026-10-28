@@ -5,79 +5,587 @@
 @source "../**/*.blade.php";
 @source "../**/*.js";
 
+/* ============================================================
+   DESIGN TOKENS — Cuberto x Framer DNA
+   Dark editorial workbench, oranye disruptif, spring physics
+   ============================================================ */
 :root {
+  /* Color: Dark Editorial Base */
+  --ink-0:       #080808;
+  --ink-1:       #111111;
+  --ink-2:       #1a1a1a;
+  --ink-3:       #242424;
+  --ink-4:       #303030;
+  --ink-5:       #404040;
+
+  /* Color: Paper (offwhite) */
+  --paper:       #F0EDE7;
+  --paper-dim:   #A8A39A;
+  --paper-faint: #585450;
+
+  /* Color: Accent */
+  --accent:      #FF4D00;
+  --accent-dim:  rgba(255, 77, 0, 0.15);
+  --accent-glow: rgba(255, 77, 0, 0.08);
+
+  /* Color: Status */
+  --tuntas:      #4BFFA0;
+  --tuntas-dim:  rgba(75, 255, 160, 0.12);
+  --remedial:    #FF3366;
+  --remedial-dim:rgba(255, 51, 102, 0.12);
+
+  /* Color: Neutral */
+  --promoted:    #7BA7F5;
+  --promoted-dim:rgba(123, 167, 245, 0.12);
+
+  /* Fonts */
   --font-display: 'Bricolage Grotesque', sans-serif;
-  --font-sans: 'Plus Jakarta Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
-  --spring-bounce: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --font-sans:    'Plus Jakarta Sans', sans-serif;
+  --font-mono:    'JetBrains Mono', monospace;
+
+  /* Motion — spring physics (bukan ease-in-out) */
+  --spring-pop:    cubic-bezier(0.34, 1.56, 0.64, 1);
+  --spring-smooth: cubic-bezier(0.16, 1, 0.3, 1);
+  --spring-quick:  cubic-bezier(0.22, 1, 0.36, 1);
+
+  /* Layout */
+  --sidebar-w: 320px;
+  --header-h: 56px;
+}
+
+/* ============================================================
+   BASE RESET
+   ============================================================ */
+html, body {
+  overflow-x: hidden;
 }
 
 body {
   font-family: var(--font-sans);
+  background-color: var(--ink-0);
+  color: var(--paper);
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-.font-display {
-  font-family: var(--font-display);
+::selection {
+  background: var(--accent);
+  color: var(--ink-0);
 }
 
-.font-mono {
+/* ============================================================
+   TYPOGRAPHY UTILITIES
+   ============================================================ */
+.font-display { font-family: var(--font-display); }
+.font-sans    { font-family: var(--font-sans); }
+.font-mono    { font-family: var(--font-mono); }
+
+/* Label kecil huruf kapital bercelah — signature editorial */
+.label-caps {
   font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
 }
 
-.transition-spring {
-  transition: var(--spring-bounce);
+/* Angka statistik besar */
+.stat-number {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 2.5rem;
+  line-height: 1;
+  color: var(--paper);
 }
 
-/* Hard offset shadow */
-.shadow-hard {
-  box-shadow: 3px 3px 0px rgba(15, 23, 42, 0.9);
+.stat-number-lg {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 3.5rem;
+  line-height: 1;
+  color: var(--paper);
 }
 
-.shadow-hard-sm {
-  box-shadow: 2px 2px 0px rgba(15, 23, 42, 0.9);
+/* ============================================================
+   LAYOUT COMPONENTS
+   ============================================================ */
+
+/* App shell */
+.app-shell {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
-.dark .shadow-hard {
-  box-shadow: 3px 3px 0px rgba(248, 250, 252, 0.85);
+/* Header — solid black, NO blur, garis bawah tipis */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  height: var(--header-h);
+  background: var(--ink-0);
+  border-bottom: 1px solid var(--ink-4);
+  display: flex;
+  align-items: center;
 }
 
-.dark .shadow-hard-sm {
-  box-shadow: 2px 2px 0px rgba(248, 250, 252, 0.85);
+/* Logo mark */
+.logo-mark {
+  width: 32px;
+  height: 32px;
+  background: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 15px;
+  color: var(--ink-0);
+  /* Sudut tajam — Cuberto signature */
+  border-radius: 0;
+  flex-shrink: 0;
 }
 
-/* Accessibility: Fallback prefers-reduced-motion */
+/* Main workbench layout */
+.workbench {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+
+/* Sidebar control panel */
+.sidebar {
+  width: var(--sidebar-w);
+  flex-shrink: 0;
+  border-right: 1px solid var(--ink-4);
+  background: var(--ink-1);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Main content area */
+.workspace {
+  flex: 1;
+  min-width: 0;
+  overflow-y: auto;
+  background: var(--ink-0);
+}
+
+/* Panel section dalam sidebar */
+.panel-section {
+  padding: 20px;
+  border-bottom: 1px solid var(--ink-3);
+}
+
+.panel-section:last-child {
+  border-bottom: none;
+}
+
+/* ============================================================
+   CARDS / TILES — Tanpa rounded besar
+   ============================================================ */
+.tile {
+  background: var(--ink-1);
+  border: 1px solid var(--ink-3);
+  border-radius: 3px;
+  padding: 20px;
+}
+
+.tile-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-bottom: 14px;
+  margin-bottom: 16px;
+  border-bottom: 1px solid var(--ink-3);
+}
+
+/* Metric tile khusus untuk stat besar */
+.metric-tile {
+  background: var(--ink-1);
+  border: 1px solid var(--ink-3);
+  border-radius: 3px;
+  padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Garis aksen kiri pada metric tile */
+.metric-tile::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--ink-5);
+  transition: background 0.2s var(--spring-quick);
+}
+
+.metric-tile.has-change::before {
+  background: var(--accent);
+}
+
+/* ============================================================
+   BUTTONS — Spring physics hover
+   ============================================================ */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 14px;
+  border-radius: 3px;
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all 0.18s var(--spring-pop);
+  white-space: nowrap;
+  user-select: none;
+}
+
+.btn:active {
+  transform: scale(0.97);
+  transition-duration: 0.08s;
+}
+
+/* Tombol primer — aksen oranye */
+.btn-primary {
+  background: var(--accent);
+  color: var(--ink-0);
+  border-color: var(--accent);
+}
+
+.btn-primary:hover {
+  background: #FF6020;
+  border-color: #FF6020;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(255, 77, 0, 0.35);
+}
+
+/* Tombol sekunder — surface gelap */
+.btn-ghost {
+  background: var(--ink-2);
+  color: var(--paper-dim);
+  border-color: var(--ink-4);
+}
+
+.btn-ghost:hover {
+  background: var(--ink-3);
+  color: var(--paper);
+  border-color: var(--ink-5);
+  transform: translateY(-1px);
+}
+
+/* Tombol kecil khusus action */
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 11px;
+}
+
+/* ============================================================
+   FORM INPUTS — Dark editorial style
+   ============================================================ */
+.inp {
+  background: var(--ink-0);
+  color: var(--paper);
+  border: 1px solid var(--ink-4);
+  border-radius: 3px;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 500;
+  outline: none;
+  transition: border-color 0.15s var(--spring-quick);
+  width: 100%;
+}
+
+.inp:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
+}
+
+.inp::placeholder {
+  color: var(--paper-faint);
+}
+
+.inp-sm {
+  padding: 5px 8px;
+  font-size: 12px;
+}
+
+/* ============================================================
+   METODE SELECTOR — Tab pill style ala Framer
+   ============================================================ */
+.method-tabs {
+  display: grid;
+  gap: 4px;
+}
+
+.method-tab {
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+  gap: 1px;
+  padding: 10px 12px;
+  background: var(--ink-2);
+  border: 1px solid var(--ink-3);
+  border-radius: 3px;
+  cursor: pointer;
+  transition: all 0.16s var(--spring-smooth);
+  text-align: left;
+}
+
+.method-tab:hover {
+  background: var(--ink-3);
+  border-color: var(--ink-5);
+}
+
+.method-tab.active {
+  background: var(--accent-dim);
+  border-color: var(--accent);
+}
+
+.method-tab .method-name {
+  font-family: var(--font-sans);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--paper-dim);
+  transition: color 0.16s;
+}
+
+.method-tab.active .method-name {
+  color: var(--accent);
+}
+
+.method-tab .method-formula {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--paper-faint);
+}
+
+/* ============================================================
+   TABLES — Ledger style, dark editorial
+   ============================================================ */
+.ledger {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+.ledger thead th {
+  padding: 10px 12px;
+  text-align: left;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper-faint);
+  border-bottom: 1px solid var(--ink-4);
+  position: sticky;
+  top: 0;
+  background: var(--ink-1);
+  z-index: 10;
+}
+
+.ledger tbody tr {
+  border-bottom: 1px solid var(--ink-2);
+  transition: background 0.12s var(--spring-quick);
+}
+
+.ledger tbody tr:hover {
+  background: var(--ink-2);
+}
+
+.ledger tbody td {
+  padding: 9px 12px;
+  color: var(--paper-dim);
+}
+
+/* Input transparan di dalam tabel */
+.ledger-input {
+  background: transparent;
+  color: var(--paper);
+  border: 1px solid transparent;
+  border-radius: 2px;
+  padding: 3px 6px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  outline: none;
+  width: 100%;
+  transition: border-color 0.12s;
+}
+
+.ledger-input:hover {
+  border-color: var(--ink-4);
+}
+
+.ledger-input:focus {
+  border-color: var(--accent);
+  background: var(--ink-2);
+}
+
+/* ============================================================
+   STATUS BADGES — Tegas, kontras tinggi
+   ============================================================ */
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.badge-tuntas {
+  background: var(--tuntas-dim);
+  color: var(--tuntas);
+}
+
+.badge-remedial {
+  background: var(--remedial-dim);
+  color: var(--remedial);
+}
+
+.badge-promoted {
+  background: var(--promoted-dim);
+  color: var(--promoted);
+}
+
+/* ============================================================
+   PROGRESS / BOBOT BAR — Cuberto style (no rounded)
+   ============================================================ */
+.bobot-bar {
+  height: 3px;
+  width: 100%;
+  background: var(--ink-3);
+  display: flex;
+  overflow: hidden;
+}
+
+.bobot-bar-ph  { background: var(--accent); transition: width 0.3s var(--spring-smooth); }
+.bobot-bar-pts { background: var(--tuntas); transition: width 0.3s var(--spring-smooth); }
+.bobot-bar-pas { background: var(--promoted); transition: width 0.3s var(--spring-smooth); }
+
+/* ============================================================
+   TOAST NOTIFICATION
+   ============================================================ */
+.toast {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 100;
+  padding: 12px 20px;
+  border-radius: 3px;
+  font-family: var(--font-sans);
+  font-size: 13px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toast-sukses {
+  background: var(--ink-2);
+  color: var(--tuntas);
+  border-color: var(--tuntas-dim);
+}
+
+.toast-gagal {
+  background: var(--ink-2);
+  color: var(--remedial);
+  border-color: var(--remedial-dim);
+}
+
+/* ============================================================
+   BOBOT INDICATOR
+   ============================================================ */
+.bobot-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px 3px 6px;
+  border-radius: 2px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid transparent;
+}
+
+.bobot-valid {
+  background: var(--tuntas-dim);
+  color: var(--tuntas);
+  border-color: rgba(75, 255, 160, 0.2);
+}
+
+.bobot-invalid {
+  background: var(--remedial-dim);
+  color: var(--remedial);
+  border-color: rgba(255, 51, 102, 0.2);
+}
+
+/* ============================================================
+   SCROLLBAR — Tipis, sesuai dark theme
+   ============================================================ */
+::-webkit-scrollbar        { width: 4px; height: 4px; }
+::-webkit-scrollbar-track  { background: transparent; }
+::-webkit-scrollbar-thumb  { background: var(--ink-5); border-radius: 0; }
+::-webkit-scrollbar-thumb:hover { background: var(--paper-faint); }
+
+/* ============================================================
+   PRINT
+   ============================================================ */
+@media print {
+  .no-print { display: none !important; }
+  body {
+    background: #fff !important;
+    color: #000 !important;
+  }
+  .site-header { position: static; }
+}
+
+/* ============================================================
+   RESPONSIVE — Workbench ke stacked pada layar kecil
+   ============================================================ */
+@media (max-width: 900px) {
+  :root { --sidebar-w: 100%; }
+
+  .workbench {
+    flex-direction: column;
+  }
+
+  .sidebar {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid var(--ink-4);
+  }
+
+  .stat-number-lg {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .stat-number    { font-size: 2rem; }
+  .stat-number-lg { font-size: 2rem; }
+}
+
+/* ============================================================
+   ACCESSIBILITY: prefers-reduced-motion
+   ============================================================ */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
-    scroll-behavior: auto !important;
-  }
-}
-
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
-}
-::-webkit-scrollbar-track {
-  background: transparent;
-}
-::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
-  border-radius: 3px;
-}
-.dark ::-webkit-scrollbar-thumb {
-  background: #334155;
-}
-
-@media print {
-  .no-print {
-    display: none !important;
-  }
-  body {
-    background: #FFFFFF !important;
-    color: #000000 !important;
   }
 }
