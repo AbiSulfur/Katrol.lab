@@ -1,0 +1,1548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Katrol.Lab - Simulator Katrol &amp; Bobot Nilai</title>
+  
+  <!-- Google Fonts: Bricolage Grotesque & JetBrains Mono -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Chart.js 4.4.2 Pinned CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+
+  <style>
+    /* CSS VARIABLES: Palet & Token Desain */
+    :root {
+      --bg-page: #F4EFE6;
+      --bg-surface: #FFFFFF;
+      --bg-subtle: #EBE5DA;
+      --text-ink: #1B1B1B;
+      --text-muted: #595550;
+      --accent-strong: #E4572E;
+      --accent-soft: #FDEEE9;
+      --border-main: #1B1B1B;
+      --border-subtle: #D8D1C5;
+      --shadow-hard: 4px 4px 0px #1B1B1B;
+      --shadow-hard-sm: 2px 2px 0px #1B1B1B;
+      --radius-sm: 2px;
+      --radius-md: 4px;
+      --font-display: 'Bricolage Grotesque', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --transition-snappy: all 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg-page: #151412;
+        --bg-surface: #1E1D1A;
+        --bg-subtle: #2A2824;
+        --text-ink: #F2EDE4;
+        --text-muted: #A39D94;
+        --accent-strong: #FF683B;
+        --accent-soft: #381E16;
+        --border-main: #F2EDE4;
+        --border-subtle: #45423C;
+        --shadow-hard: 4px 4px 0px #F2EDE4;
+        --shadow-hard-sm: 2px 2px 0px #F2EDE4;
+      }
+    }
+
+    /* BASE STYLES */
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-page);
+      color: var(--text-ink);
+      font-family: var(--font-mono);
+      font-size: 14px;
+      line-height: 1.5;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+    }
+
+    /* Aksesibilitas: prefers-reduced-motion fallback */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    /* WRAPPER & LAYOUT */
+    .app-container {
+      width: 100%;
+      max-width: 1140px;
+      margin: 0 auto;
+      padding: 24px 16px 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+
+    /* HEADER */
+    .app-header {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-main);
+      box-shadow: var(--shadow-hard);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Garis diagonal ornamen katrol */
+    .katrol-ornament {
+      height: 10px;
+      width: 100%;
+      background: repeating-linear-gradient(
+        45deg,
+        var(--border-main),
+        var(--border-main) 2px,
+        transparent 2px,
+        transparent 8px
+      );
+      border-bottom: 1.5px solid var(--border-main);
+    }
+
+    .header-content {
+      padding: 20px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .header-content {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      line-height: 1.1;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title .brand-dot {
+      color: var(--accent-strong);
+    }
+
+    .brand-tagline {
+      font-size: 0.88rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .header-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+    }
+
+    /* TOMBOL DENGAN HARD OFFSET SHADOW */
+    .btn {
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      font-weight: 600;
+      padding: 10px 16px;
+      border: 1.5px solid var(--border-main);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      transition: var(--transition-snappy);
+      background-color: var(--bg-surface);
+      color: var(--text-ink);
+    }
+
+    .btn-primary {
+      background-color: var(--accent-strong);
+      color: #FFFFFF;
+      box-shadow: var(--shadow-hard);
+      border-color: var(--border-main);
+    }
+
+    .btn-primary:hover {
+      transform: translate(-2px, -2px);
+      box-shadow: 6px 6px 0px var(--border-main);
+    }
+
+    .btn-primary:active {
+      transform: translate(2px, 2px);
+      box-shadow: 2px 2px 0px var(--border-main);
+    }
+
+    .btn-secondary {
+      background-color: var(--bg-surface);
+      color: var(--text-ink);
+      box-shadow: var(--shadow-hard-sm);
+    }
+
+    .btn-secondary:hover {
+      background-color: var(--bg-subtle);
+      transform: translate(-1px, -1px);
+      box-shadow: 3px 3px 0px var(--border-main);
+    }
+
+    .btn-secondary:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border-main);
+    }
+
+    .btn-danger {
+      background-color: transparent;
+      color: var(--accent-strong);
+      border-color: var(--accent-strong);
+      padding: 4px 8px;
+      font-size: 0.78rem;
+    }
+
+    .btn-danger:hover {
+      background-color: var(--accent-strong);
+      color: #FFFFFF;
+    }
+
+    /* PANEL & SECTION */
+    .panel {
+      background: var(--bg-surface);
+      border: 1.5px solid var(--border-main);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      padding: 14px 20px;
+      border-bottom: 1.5px solid var(--border-main);
+      background-color: var(--bg-subtle);
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .panel-title {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .panel-title .badge-num {
+      background-color: var(--border-main);
+      color: var(--bg-page);
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: var(--radius-sm);
+    }
+
+    .panel-body {
+      padding: 20px;
+    }
+
+    /* FORM & INPUT ELEMENTS */
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .form-grid {
+        grid-template-columns: repeat(12, 1fr);
+      }
+      .col-4 { grid-column: span 4; }
+      .col-5 { grid-column: span 5; }
+      .col-7 { grid-column: span 7; }
+      .col-8 { grid-column: span 8; }
+      .col-12 { grid-column: span 12; }
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .form-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--text-muted);
+    }
+
+    .input-control, .select-control {
+      font-family: var(--font-mono);
+      font-size: 0.95rem;
+      padding: 10px 12px;
+      border: 1.5px solid var(--border-main);
+      border-radius: var(--radius-sm);
+      background-color: var(--bg-surface);
+      color: var(--text-ink);
+      width: 100%;
+      transition: var(--transition-snappy);
+    }
+
+    .input-control:focus, .select-control:focus {
+      outline: none;
+      border-color: var(--accent-strong);
+      box-shadow: 2px 2px 0px var(--accent-strong);
+    }
+
+    .bobot-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .bobot-indicator {
+      margin-top: 8px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 4px 8px;
+      border: 1.5px solid var(--border-main);
+      border-radius: var(--radius-sm);
+      width: fit-content;
+    }
+
+    .bobot-indicator.valid {
+      background-color: var(--bg-subtle);
+      color: var(--text-ink);
+    }
+
+    .bobot-indicator.invalid {
+      background-color: var(--accent-soft);
+      color: var(--accent-strong);
+      border-color: var(--accent-strong);
+    }
+
+    .metode-info-box {
+      margin-top: 10px;
+      padding: 10px 12px;
+      background-color: var(--bg-subtle);
+      border: 1px dashed var(--border-main);
+      border-radius: var(--radius-sm);
+      font-size: 0.82rem;
+      color: var(--text-muted);
+    }
+
+    .dynamic-param-area {
+      margin-top: 14px;
+      padding: 14px;
+      border: 1.5px solid var(--border-subtle);
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-sm);
+    }
+
+    /* TABEL EDITABLE & RESPONSIVE CONTAINER */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1.5px solid var(--border-main);
+      background-color: var(--bg-surface);
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .table-editorial {
+      width: 100%;
+      border-collapse: collapse;
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .table-editorial th {
+      background-color: var(--bg-subtle);
+      color: var(--text-ink);
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+      padding: 12px 14px;
+      border-bottom: 1.5px solid var(--border-main);
+      border-right: 1px solid var(--border-subtle);
+    }
+
+    .table-editorial th:last-child {
+      border-right: none;
+    }
+
+    .table-editorial td {
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      border-right: 1px solid var(--border-subtle);
+      vertical-align: middle;
+    }
+
+    .table-editorial td:last-child {
+      border-right: none;
+    }
+
+    .table-editorial tr:last-child td {
+      border-bottom: none;
+    }
+
+    .table-editorial tr:hover td {
+      background-color: var(--bg-subtle);
+    }
+
+    .table-input {
+      font-family: var(--font-mono);
+      font-size: 0.88rem;
+      padding: 6px 8px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: transparent;
+      color: var(--text-ink);
+      width: 100%;
+    }
+
+    .table-input:focus {
+      outline: none;
+      border-color: var(--accent-strong);
+      background: var(--bg-surface);
+    }
+
+    .table-input.input-number {
+      width: 70px;
+      text-align: right;
+    }
+
+    /* BADGE STATUS TUNTAS & REMEDIAL */
+    .badge-status {
+      display: inline-block;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: var(--radius-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .badge-tuntas {
+      background-color: var(--border-main);
+      color: var(--bg-page);
+    }
+
+    .badge-remedial {
+      background-color: var(--accent-strong);
+      color: #FFFFFF;
+    }
+
+    .delta-badge {
+      font-weight: 700;
+      color: var(--accent-strong);
+    }
+
+    /* KARTU STATISTIK DAMPAK */
+    .stat-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    @media (min-width: 600px) {
+      .stat-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 992px) {
+      .stat-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .stat-card {
+      border: 1.5px solid var(--border-main);
+      padding: 16px;
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-sm);
+      position: relative;
+    }
+
+    .stat-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--text-muted);
+      margin-bottom: 8px;
+    }
+
+    .stat-value-group {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .stat-val-old {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-decoration: line-through;
+    }
+
+    .stat-arrow {
+      font-size: 1rem;
+      color: var(--text-muted);
+    }
+
+    .stat-val-new {
+      font-family: var(--font-mono);
+      font-size: 1.85rem;
+      font-weight: 800;
+      color: var(--accent-strong);
+      line-height: 1;
+    }
+
+    .stat-note {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+    }
+
+    /* GRAFIK CANVAS AREA */
+    .chart-container-card {
+      border: 1.5px solid var(--border-main);
+      padding: 20px;
+      background-color: var(--bg-surface);
+      border-radius: var(--radius-sm);
+    }
+
+    .chart-header {
+      margin-bottom: 16px;
+    }
+
+    .chart-title {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .chart-subtitle {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .chart-wrapper {
+      position: relative;
+      height: 280px;
+      width: 100%;
+    }
+
+    /* FOOTER */
+    .app-footer {
+      border-top: 1.5px solid var(--border-main);
+      padding: 24px 0 12px;
+      margin-top: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .app-footer {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+
+    .footer-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-meta {
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .footer-meta .badge-storage {
+      display: inline-block;
+      padding: 2px 6px;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      font-size: 0.72rem;
+      margin-right: 4px;
+    }
+
+    /* CETAK / PRINT STYLES */
+    @media print {
+      body {
+        background: #FFFFFF !important;
+        color: #000000 !important;
+      }
+      .app-header .header-actions,
+      .panel-toolbar,
+      .footer-actions,
+      .btn {
+        display: none !important;
+      }
+      .panel {
+        border-color: #000000 !important;
+        page-break-inside: avoid;
+        margin-bottom: 20px;
+      }
+      .app-container {
+        max-width: 100% !important;
+        padding: 0 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- 1. HEADER -->
+    <header class="app-header">
+      <div class="katrol-ornament"></div>
+      <div class="header-content">
+        <div>
+          <h1 class="brand-title">Katrol.Lab<span class="brand-dot">_</span></h1>
+          <p class="brand-tagline">Atur bobot, uji katrol, lihat dampaknya sebelum nilai dikunci.</p>
+        </div>
+        <div class="header-actions">
+          <button id="btnContoh" class="btn btn-primary" type="button">
+            Isi data contoh
+          </button>
+          <button id="btnReset" class="btn btn-secondary" type="button">
+            Reset
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- 2. PANEL 1: PENGATURAN -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <span class="badge-num">01</span>
+          Pengaturan Bobot &amp; Metode Katrol
+        </h2>
+      </div>
+      <div class="panel-body">
+        <div class="form-grid">
+          
+          <!-- Input KKM -->
+          <div class="form-group col-4">
+            <label class="form-label" for="inputKKM">Kriteria Ketuntasan Minimal (KKM)</label>
+            <input type="number" id="inputKKM" class="input-control" min="0" max="100" value="75">
+          </div>
+
+          <!-- Bobot Komponen -->
+          <div class="form-group col-8">
+            <label class="form-label">Bobot Komponen Nilai (Harus 100%)</label>
+            <div class="bobot-row">
+              <div>
+                <label class="form-label" for="inputBobotPH">PH (%)</label>
+                <input type="number" id="inputBobotPH" class="input-control" min="0" max="100" value="40">
+              </div>
+              <div>
+                <label class="form-label" for="inputBobotPTS">PTS (%)</label>
+                <input type="number" id="inputBobotPTS" class="input-control" min="0" max="100" value="30">
+              </div>
+              <div>
+                <label class="form-label" for="inputBobotPAS">PAS (%)</label>
+                <input type="number" id="inputBobotPAS" class="input-control" min="0" max="100" value="30">
+              </div>
+            </div>
+            <div id="indikatorBobot" class="bobot-indicator valid">
+              Total Bobot: 100% [Valid]
+            </div>
+          </div>
+
+          <!-- Dropdown Metode Katrol -->
+          <div class="form-group col-12">
+            <label class="form-label" for="selectMetode">Metode Katrol Nilai</label>
+            <select id="selectMetode" class="select-control">
+              <option value="none">Tanpa katrol (Nilai murni)</option>
+              <option value="tambah">Tambah poin tetap (+X)</option>
+              <option value="skalaMax">Skala ke nilai tertinggi (nilai / maks &times; 100)</option>
+              <option value="akar">Akar kuadrat (&radic;nilai &times; 10)</option>
+              <option value="minmax">Min-max ke rentang [A, B]</option>
+            </select>
+            <div id="deskripsiMetode" class="metode-info-box">
+              Nilai murni dihitung langsung berdasarkan persentase bobot PH, PTS, dan PAS tanpa penyesuaian.
+            </div>
+            
+            <!-- Parameter Metode Dinamis -->
+            <div id="areaParamDinamis" class="dynamic-param-area" style="display: none;">
+              <!-- Disuntikkan secara dinamis oleh JS -->
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. PANEL 2: DATA SISWA -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <span class="badge-num">02</span>
+          Data Siswa &amp; Komponen Nilai
+          <span id="counterSiswa" style="font-size: 0.8rem; font-weight: normal; color: var(--text-muted);">(0 Siswa)</span>
+        </h2>
+        <div class="panel-toolbar" style="display: flex; gap: 8px;">
+          <button id="btnTambahBaris" class="btn btn-secondary" type="button">
+            + Tambah Siswa
+          </button>
+          <button id="btnImporCSV" class="btn btn-secondary" type="button">
+            Impor CSV
+          </button>
+        </div>
+      </div>
+      <div class="panel-body">
+        <div class="table-container">
+          <table class="table-editorial" id="tabelSiswa">
+            <thead>
+              <tr>
+                <th style="width: 50px;">No</th>
+                <th>Nama Siswa</th>
+                <th style="width: 100px; text-align: right;">PH</th>
+                <th style="width: 100px; text-align: right;">PTS</th>
+                <th style="width: 100px; text-align: right;">PAS</th>
+                <th style="width: 90px; text-align: center;">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="tbodySiswa">
+              <!-- Baris data diisi oleh renderTabelSiswa -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. PANEL 3: HASIL -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <span class="badge-num">03</span>
+          Hasil Perbandingan Sebelum vs Sesudah Katrol
+        </h2>
+      </div>
+      <div class="panel-body">
+        <div class="table-container">
+          <table class="table-editorial" id="tabelHasil">
+            <thead>
+              <tr>
+                <th style="width: 50px;">No</th>
+                <th>Nama Siswa</th>
+                <th style="width: 110px; text-align: right;">Nilai Awal</th>
+                <th style="width: 120px; text-align: center;">Status Awal</th>
+                <th style="width: 120px; text-align: right;">Nilai Katrol</th>
+                <th style="width: 120px; text-align: center;">Status Akhir</th>
+                <th style="width: 90px; text-align: right;">Selisih</th>
+              </tr>
+            </thead>
+            <tbody id="tbodyHasil">
+              <!-- Baris hasil diisi oleh renderHasil -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. PANEL 4: DAMPAK -->
+    <section class="panel">
+      <div class="panel-header">
+        <h2 class="panel-title">
+          <span class="badge-num">04</span>
+          Analisis Dampak Katrol
+        </h2>
+      </div>
+      <div class="panel-body">
+        
+        <!-- Kartu Ringkasan -->
+        <div class="stat-grid">
+          
+          <div class="stat-card">
+            <div class="stat-label">Siswa Remedial</div>
+            <div class="stat-value-group">
+              <span id="statRemedialSebelum" class="stat-val-old">0</span>
+              <span class="stat-arrow">&rarr;</span>
+              <span id="statRemedialSesudah" class="stat-val-new">0</span>
+            </div>
+            <div id="statRemedialKet" class="stat-note">Belum ada data</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Rata-Rata Kelas</div>
+            <div class="stat-value-group">
+              <span id="statRataSebelum" class="stat-val-old">0.0</span>
+              <span class="stat-arrow">&rarr;</span>
+              <span id="statRataSesudah" class="stat-val-new">0.0</span>
+            </div>
+            <div id="statRataKet" class="stat-note">Berdasarkan data aktif</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Nilai Tertinggi</div>
+            <div class="stat-value-group">
+              <span id="statTinggiSebelum" class="stat-val-old">0</span>
+              <span class="stat-arrow">&rarr;</span>
+              <span id="statTinggiSesudah" class="stat-val-new">0</span>
+            </div>
+            <div id="statTinggiKet" class="stat-note">Perubahan puncak</div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-label">Nilai Terendah</div>
+            <div class="stat-value-group">
+              <span id="statRendahSebelum" class="stat-val-old">0</span>
+              <span class="stat-arrow">&rarr;</span>
+              <span id="statRendahSesudah" class="stat-val-new">0</span>
+            </div>
+            <div id="statRendahKet" class="stat-note">Batas bawah nilai</div>
+          </div>
+
+        </div>
+
+        <!-- Grafik Sebaran Nilai -->
+        <div class="chart-container-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Grafik Perbandingan Sebaran Nilai</h3>
+            <p class="chart-subtitle">Distribusi frekuensi siswa pada rentang nilai sebelum dan sesudah penerapan katrol</p>
+          </div>
+          <div class="chart-wrapper">
+            <canvas id="chartSebaran"></canvas>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- 6. FOOTER -->
+    <footer class="app-footer">
+      <div class="footer-actions">
+        <button id="btnEksporCSV" class="btn btn-secondary" type="button">
+          Ekspor CSV
+        </button>
+        <button id="btnCetak" class="btn btn-secondary" type="button">
+          Cetak Lembar Nilai
+        </button>
+      </div>
+      <div class="footer-meta">
+        <span class="badge-storage">Lokal</span>
+        Catatan: Data tersimpan di browser ini saja. Tidak dikirimkan ke server.
+      </div>
+    </footer>
+
+  </div>
+
+  <script>
+    /* ==========================================================================
+       STATE
+       ========================================================================== */
+    const STORAGE_KEY = "katrollab:v1";
+
+    const state = {
+      kkm: 75,
+      bobot: { ph: 40, pts: 30, pas: 30 },
+      metode: "none", // "none" | "tambah" | "skalaMax" | "akar" | "minmax"
+      param: { tambah: 5, minmaxMin: 70, minmaxMax: 100 },
+      siswa: []
+    };
+
+    // Data 12 siswa contoh dengan nama Indonesia fiktif dan nilai realistis
+    const CONTOH_SISWA = [
+      { id: "s-1", nama: "Ahmad Fauzi", ph: 70, pts: 65, pas: 68 },
+      { id: "s-2", nama: "Siti Nurhaliza", ph: 85, pts: 88, pas: 82 },
+      { id: "s-3", nama: "Budi Santoso", ph: 60, pts: 55, pas: 58 },
+      { id: "s-4", nama: "Dewi Lestari", ph: 90, pts: 92, pas: 88 },
+      { id: "s-5", nama: "Eko Prasetyo", ph: 72, pts: 70, pas: 68 },
+      { id: "s-6", nama: "Fitri Handayani", ph: 78, pts: 80, pas: 76 },
+      { id: "s-7", nama: "Gilang Ramadhan", ph: 58, pts: 62, pas: 54 },
+      { id: "s-8", nama: "Hani Wijaya", ph: 92, pts: 95, pas: 90 },
+      { id: "s-9", nama: "I Made Artha", ph: 75, pts: 74, pas: 76 },
+      { id: "s-10", nama: "Joko Supriyadi", ph: 64, pts: 60, pas: 62 },
+      { id: "s-11", nama: "Kartika Putri", ph: 82, pts: 84, pas: 80 },
+      { id: "s-12", nama: "Larasati Kusuma", ph: 88, pts: 85, pas: 86 }
+    ];
+
+    let chartInstance = null;
+
+    /* ==========================================================================
+       UTIL
+       ========================================================================== */
+    function sanitasiAngka(val, fallback = 0) {
+      const n = Number(val);
+      return isNaN(n) ? fallback : n;
+    }
+
+    function formatDesimal(num) {
+      return Number(num).toFixed(1);
+    }
+
+    function buatIdUnik() {
+      return "s-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+    }
+
+    /* ==========================================================================
+       LOGIKA (STUB: DENGAN // TODO DAN NILAI DUMMY)
+       ========================================================================== */
+    function hitungNilaiAkhir(siswa, bobot) {
+      // TODO: Implementasi logika perhitungan berbobot aktual: (PH*w_ph + PTS*w_pts + PAS*w_pas) / 100
+      // Nilai dummy untuk skeleton: hitung rata-rata komponen sederhana
+      const ph = sanitasiAngka(siswa.ph, 0);
+      const pts = sanitasiAngka(siswa.pts, 0);
+      const pas = sanitasiAngka(siswa.pas, 0);
+      const dummy = (ph * (bobot.ph || 40) + pts * (bobot.pts || 30) + pas * (bobot.pas || 30)) / 100;
+      return Math.round(dummy * 10) / 10;
+    }
+
+    function terapkanKatrol(nilai, metode, param, semuaNilai) {
+      // TODO: Implementasi rumus katrol sesuai spesifikasi teknis tahap 2
+      // - tambah: nilai + X
+      // - skalaMax: (nilai / max) * 100
+      // - akar: sqrt(nilai) * 10
+      // - minmax: A + (nilai - min)/(max - min) * (B - A)
+      // Nilai dummy untuk skeleton: simulasi kenaikan terkontrol di-clamp 0 sampai 100
+      let hasilDummy = nilai;
+
+      if (metode === "none") {
+        hasilDummy = nilai;
+      } else if (metode === "tambah") {
+        const bonus = sanitasiAngka(param?.tambah, 5);
+        hasilDummy = nilai + bonus;
+      } else if (metode === "skalaMax") {
+        const max = Math.max(...semuaNilai, 85);
+        hasilDummy = (nilai / max) * 100;
+      } else if (metode === "akar") {
+        hasilDummy = Math.sqrt(Math.max(0, nilai)) * 10;
+      } else if (metode === "minmax") {
+        const minTarget = sanitasiAngka(param?.minmaxMin, 70);
+        const maxTarget = sanitasiAngka(param?.minmaxMax, 100);
+        const minAsal = Math.min(...semuaNilai, 50);
+        const maxAsal = Math.max(...semuaNilai, 95);
+        const rentangAsal = maxAsal - minAsal || 1;
+        hasilDummy = minTarget + ((nilai - minAsal) / rentangAsal) * (maxTarget - minTarget);
+      }
+
+      // Pastikan hasil selalu di-clamp antara 0 sampai 100
+      const clamped = Math.min(100, Math.max(0, hasilDummy));
+      return Math.round(clamped * 10) / 10;
+    }
+
+    function hitungStatistik(daftarNilai, kkm) {
+      // TODO: Implementasi agregasi statistik lengkap dan validasi edge case
+      // Nilai dummy dinamis untuk skeleton agar UI kartu statistik terisi realistis
+      if (!daftarNilai || daftarNilai.length === 0) {
+        return {
+          remedialSebelum: 0,
+          remedialSesudah: 0,
+          rataSebelum: 0,
+          rataSesudah: 0,
+          tertinggiSebelum: 0,
+          tertinggiSesudah: 0,
+          terendahSebelum: 0,
+          terendahSesudah: 0,
+          sebaranSebelum: [0, 0, 0, 0, 0],
+          sebaranSesudah: [0, 0, 0, 0, 0]
+        };
+      }
+
+      const sebelum = daftarNilai.map(d => d.sebelum);
+      const sesudah = daftarNilai.map(d => d.sesudah);
+
+      const hitungRemed = (arr) => arr.filter(n => n < kkm).length;
+      const hitungRata = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length;
+      const hitungSebaran = (arr) => {
+        // Interval: <60, 60-69, 70-74, 75-84, 85-100
+        const bins = [0, 0, 0, 0, 0];
+        arr.forEach(n => {
+          if (n < 60) bins[0]++;
+          else if (n < 70) bins[1]++;
+          else if (n < 75) bins[2]++;
+          else if (n < 85) bins[3]++;
+          else bins[4]++;
+        });
+        return bins;
+      };
+
+      return {
+        remedialSebelum: hitungRemed(sebelum),
+        remedialSesudah: hitungRemed(sesudah),
+        rataSebelum: formatDesimal(hitungRata(sebelum)),
+        rataSesudah: formatDesimal(hitungRata(sesudah)),
+        tertinggiSebelum: formatDesimal(Math.max(...sebelum)),
+        tertinggiSesudah: formatDesimal(Math.max(...sesudah)),
+        terendahSebelum: formatDesimal(Math.min(...sebelum)),
+        terendahSesudah: formatDesimal(Math.min(...sesudah)),
+        sebaranSebelum: hitungSebaran(sebelum),
+        sebaranSesudah: hitungSebaran(sesudah)
+      };
+    }
+
+    function validasiBobot(bobot) {
+      // TODO: Validasi menyeluruh terhadap nilai negatif, floating point, dan persentase
+      const ph = sanitasiAngka(bobot.ph, 0);
+      const pts = sanitasiAngka(bobot.pts, 0);
+      const pas = sanitasiAngka(bobot.pas, 0);
+      const total = ph + pts + pas;
+      return {
+        valid: total === 100,
+        total: total
+      };
+    }
+
+    function simpanState() {
+      // TODO: Optimasi penyimpanan batch atau throttling bila diperlukan
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      } catch (err) {
+        console.error("Gagal menyimpan data ke localStorage:", err);
+      }
+    }
+
+    function muatState() {
+      // TODO: Validasi skema dan migrasi versi state jika ada perubahan struktur
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === "object") {
+            Object.assign(state, parsed);
+            return true;
+          }
+        }
+      } catch (err) {
+        console.error("Gagal memuat data dari localStorage:", err);
+      }
+      return false;
+    }
+
+    function isiDataContoh() {
+      // TODO: Logika penambahan set data alternatif (IPA, IPS, Kejuruan)
+      // ISI sungguhan: 12 siswa dengan nama Indonesia fiktif dan nilai realistis
+      state.siswa = JSON.parse(JSON.stringify(CONTOH_SISWA));
+      simpanState();
+      renderSemua();
+    }
+
+    function eksporCSV() {
+      // TODO: Implementasi ekspor tabel hasil ke format CSV siap cetak/Excel
+      alert("Fitur Ekspor CSV (Stub): Akan diimplementasikan pada tahap logika berikutnya.");
+    }
+
+    function imporCSV() {
+      // TODO: Implementasi parser CSV file reader dengan dialog pemilihan berkas
+      alert("Fitur Impor CSV (Stub): Akan diimplementasikan pada tahap logika berikutnya.");
+    }
+
+    /* ==========================================================================
+       RENDER
+       ========================================================================== */
+    function renderPengaturan() {
+      const inputKKM = document.getElementById("inputKKM");
+      const inputPH = document.getElementById("inputBobotPH");
+      const inputPTS = document.getElementById("inputBobotPTS");
+      const inputPAS = document.getElementById("inputBobotPAS");
+      const selectMetode = document.getElementById("selectMetode");
+      const indikatorBobot = document.getElementById("indikatorBobot");
+      const deskripsiMetode = document.getElementById("deskripsiMetode");
+      const areaParam = document.getElementById("areaParamDinamis");
+
+      if (inputKKM) inputKKM.value = state.kkm;
+      if (inputPH) inputPH.value = state.bobot.ph;
+      if (inputPTS) inputPTS.value = state.bobot.pts;
+      if (inputPAS) inputPAS.value = state.bobot.pas;
+      if (selectMetode) selectMetode.value = state.metode;
+
+      // Validasi bobot visual
+      const val = validasiBobot(state.bobot);
+      if (indikatorBobot) {
+        indikatorBobot.textContent = `Total Bobot: ${val.total}% ${val.valid ? "[Valid 100%]" : "[Peringatan: Harus 100%]"}`;
+        indikatorBobot.className = `bobot-indicator ${val.valid ? "valid" : "invalid"}`;
+      }
+
+      // Deskripsi metode katrol
+      const teksDeskripsi = {
+        none: "Nilai murni dihitung langsung berdasarkan persentase bobot PH, PTS, dan PAS tanpa penyesuaian.",
+        tambah: "Menambahkan sejumlah poin tetap (+X) secara merata ke seluruh siswa. Nilai maksimal di-clamp ke 100.",
+        skalaMax: "Mencari nilai tertinggi di kelas lalu menskalakannya ke 100, nilai siswa lain terangkat secara proporsional.",
+        akar: "Transformasi akar kuadrat (akar nilai dikali 10). Memberikan dorongan persentase lebih besar kepada nilai rendah.",
+        minmax: "Mentransformasikan nilai terendah dan tertinggi kelas ke dalam interval baru target [A, B]."
+      };
+      if (deskripsiMetode) {
+        deskripsiMetode.textContent = teksDeskripsi[state.metode] || "";
+      }
+
+      // Render parameter dinamis
+      if (!areaParam) return;
+      if (state.metode === "tambah") {
+        areaParam.style.display = "block";
+        areaParam.innerHTML = `
+          <div class="form-group" style="max-width: 300px;">
+            <label class="form-label" for="paramTambah">Besaran Tambahan Poin (+X)</label>
+            <input type="number" id="paramTambah" class="input-control" value="${state.param.tambah ?? 5}" min="1" max="50">
+          </div>
+        `;
+        const inputTambah = document.getElementById("paramTambah");
+        inputTambah?.addEventListener("input", (e) => {
+          state.param.tambah = sanitasiAngka(e.target.value, 5);
+          simpanState();
+          renderHasil();
+          renderDampak();
+        });
+      } else if (state.metode === "minmax") {
+        areaParam.style.display = "block";
+        areaParam.innerHTML = `
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-width: 400px;">
+            <div class="form-group">
+              <label class="form-label" for="paramMin">Batas Bawah Target (A)</label>
+              <input type="number" id="paramMin" class="input-control" value="${state.param.minmaxMin ?? 70}" min="0" max="100">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="paramMax">Batas Atas Target (B)</label>
+              <input type="number" id="paramMax" class="input-control" value="${state.param.minmaxMax ?? 100}" min="0" max="100">
+            </div>
+          </div>
+        `;
+        const pMin = document.getElementById("paramMin");
+        const pMax = document.getElementById("paramMax");
+        pMin?.addEventListener("input", (e) => {
+          state.param.minmaxMin = sanitasiAngka(e.target.value, 70);
+          simpanState();
+          renderHasil();
+          renderDampak();
+        });
+        pMax?.addEventListener("input", (e) => {
+          state.param.minmaxMax = sanitasiAngka(e.target.value, 100);
+          simpanState();
+          renderHasil();
+          renderDampak();
+        });
+      } else {
+        areaParam.style.display = "none";
+        areaParam.innerHTML = "";
+      }
+    }
+
+    function renderTabelSiswa() {
+      const tbody = document.getElementById("tbodySiswa");
+      const counter = document.getElementById("counterSiswa");
+      if (!tbody) return;
+
+      if (counter) {
+        counter.textContent = `(${state.siswa.length} Siswa)`;
+      }
+
+      if (state.siswa.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 24px; color: var(--text-muted);">
+              Belum ada data siswa. Klik <strong>[Isi data contoh]</strong> di atas atau <strong>[+ Tambah Siswa]</strong> untuk mulai.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = state.siswa.map((item, idx) => `
+        <tr data-id="${item.id}">
+          <td style="font-weight: 700; color: var(--text-muted);">${idx + 1}</td>
+          <td>
+            <input type="text" class="table-input input-nama" value="${item.nama || ""}" placeholder="Nama Siswa">
+          </td>
+          <td>
+            <input type="number" class="table-input input-number input-ph" min="0" max="100" value="${item.ph}">
+          </td>
+          <td>
+            <input type="number" class="table-input input-number input-pts" min="0" max="100" value="${item.pts}">
+          </td>
+          <td>
+            <input type="number" class="table-input input-number input-pas" min="0" max="100" value="${item.pas}">
+          </td>
+          <td style="text-align: center;">
+            <button class="btn btn-danger btn-hapus" type="button" data-id="${item.id}" title="Hapus baris ini">
+              Hapus
+            </button>
+          </td>
+        </tr>
+      `).join("");
+    }
+
+    function renderHasil() {
+      const tbody = document.getElementById("tbodyHasil");
+      if (!tbody) return;
+
+      if (state.siswa.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 24px; color: var(--text-muted);">
+              Data siswa kosong. Tabel perbandingan hasil akan muncul otomatis saat data terisi.
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      // Hitung semua nilai awal untuk kebutuhan penskalaan
+      const nilaiAwalList = state.siswa.map(s => hitungNilaiAkhir(s, state.bobot));
+
+      tbody.innerHTML = state.siswa.map((s, idx) => {
+        const sebelum = nilaiAwalList[idx];
+        const sesudah = terapkanKatrol(sebelum, state.metode, state.param, nilaiAwalList);
+        const selisih = Math.round((sesudah - sebelum) * 10) / 10;
+
+        const tuntasSebelum = sebelum >= state.kkm;
+        const tuntasSesudah = sesudah >= state.kkm;
+
+        return `
+          <tr>
+            <td style="font-weight: 700; color: var(--text-muted);">${idx + 1}</td>
+            <td style="font-weight: 600;">${s.nama || "Tanpa Nama"}</td>
+            <td style="text-align: right; font-weight: 700;">${formatDesimal(sebelum)}</td>
+            <td style="text-align: center;">
+              <span class="badge-status ${tuntasSebelum ? "badge-tuntas" : "badge-remedial"}">
+                ${tuntasSebelum ? "Tuntas" : "Remedial"}
+              </span>
+            </td>
+            <td style="text-align: right; font-weight: 700; color: var(--accent-strong);">${formatDesimal(sesudah)}</td>
+            <td style="text-align: center;">
+              <span class="badge-status ${tuntasSesudah ? "badge-tuntas" : "badge-remedial"}">
+                ${tuntasSesudah ? "Tuntas" : "Remedial"}
+              </span>
+            </td>
+            <td style="text-align: right;" class="delta-badge">
+              ${selisih >= 0 ? "+" : ""}${formatDesimal(selisih)}
+            </td>
+          </tr>
+        `;
+      }).join("");
+    }
+
+    function renderDampak() {
+      // Ambil daftar nilai untuk kalkulasi statistik
+      const nilaiAwalList = state.siswa.map(s => hitungNilaiAkhir(s, state.bobot));
+      const pasanganNilai = state.siswa.map((s, idx) => {
+        const sebelum = nilaiAwalList[idx];
+        const sesudah = terapkanKatrol(sebelum, state.metode, state.param, nilaiAwalList);
+        return { sebelum, sesudah };
+      });
+
+      const stats = hitungStatistik(pasanganNilai, state.kkm);
+
+      // Isi kartu statistik
+      const elRemSebelum = document.getElementById("statRemedialSebelum");
+      const elRemSesudah = document.getElementById("statRemedialSesudah");
+      const elRemKet = document.getElementById("statRemedialKet");
+
+      const elRataSebelum = document.getElementById("statRataSebelum");
+      const elRataSesudah = document.getElementById("statRataSesudah");
+      const elRataKet = document.getElementById("statRataKet");
+
+      const elTinggiSebelum = document.getElementById("statTinggiSebelum");
+      const elTinggiSesudah = document.getElementById("statTinggiSesudah");
+
+      const elRendahSebelum = document.getElementById("statRendahSebelum");
+      const elRendahSesudah = document.getElementById("statRendahSesudah");
+
+      if (elRemSebelum) elRemSebelum.textContent = stats.remedialSebelum;
+      if (elRemSesudah) elRemSesudah.textContent = stats.remedialSesudah;
+      if (elRemKet) {
+        const beda = stats.remedialSebelum - stats.remedialSesudah;
+        elRemKet.textContent = beda > 0 
+          ? `Turun ${beda} siswa remedial` 
+          : (beda < 0 ? `Bertambah ${Math.abs(beda)} remedial` : "Tidak ada perubahan jumlah");
+      }
+
+      if (elRataSebelum) elRataSebelum.textContent = stats.rataSebelum;
+      if (elRataSesudah) elRataSesudah.textContent = stats.rataSesudah;
+      if (elRataKet) {
+        const deltaRata = Number(stats.rataSesudah) - Number(stats.rataSebelum);
+        elRataKet.textContent = `Selisih rata-rata: ${deltaRata >= 0 ? "+" : ""}${deltaRata.toFixed(1)} poin`;
+      }
+
+      if (elTinggiSebelum) elTinggiSebelum.textContent = stats.tertinggiSebelum;
+      if (elTinggiSesudah) elTinggiSesudah.textContent = stats.tertinggiSesudah;
+
+      if (elRendahSebelum) elRendahSebelum.textContent = stats.terendahSebelum;
+      if (elRendahSesudah) elRendahSesudah.textContent = stats.terendahSesudah;
+
+      // Inisialisasi atau perbarui grafik Chart.js
+      renderGrafikChart(stats.sebaranSebelum, stats.sebaranSesudah);
+    }
+
+    function renderGrafikChart(sebaranSebelum, sebaranSesudah) {
+      const canvas = document.getElementById("chartSebaran");
+      if (!canvas) return;
+
+      if (typeof Chart === "undefined") {
+        console.warn("Chart.js belum siap atau gagal dimuat.");
+        return;
+      }
+
+      const labels = ["< 60", "60-69", "70-74", "75-84", "85-100"];
+
+      if (chartInstance) {
+        chartInstance.data.datasets[0].data = sebaranSebelum;
+        chartInstance.data.datasets[1].data = sebaranSesudah;
+        chartInstance.update();
+        return;
+      }
+
+      const ctx = canvas.getContext("2d");
+      chartInstance = new Chart(ctx, {
+        type: "bar",
+        data: {
+          labels: labels,
+          datasets: [
+            {
+              label: "Sebelum Katrol",
+              data: sebaranSebelum,
+              backgroundColor: "#1B1B1B",
+              borderColor: "#1B1B1B",
+              borderWidth: 1.5,
+              borderRadius: 2
+            },
+            {
+              label: "Sesudah Katrol",
+              data: sebaranSesudah,
+              backgroundColor: "#E4572E",
+              borderColor: "#E4572E",
+              borderWidth: 1.5,
+              borderRadius: 2
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: "top",
+              labels: {
+                font: {
+                  family: "'JetBrains Mono', monospace",
+                  size: 12
+                },
+                color: "#1B1B1B"
+              }
+            },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return ` ${context.dataset.label}: ${context.raw} siswa`;
+                }
+              }
+            }
+          },
+          scales: {
+            y: {
+              beginAtZero: true,
+              ticks: {
+                stepSize: 1,
+                font: { family: "'JetBrains Mono', monospace" }
+              },
+              grid: {
+                color: "#E5E0D8"
+              }
+            },
+            x: {
+              ticks: {
+                font: { family: "'JetBrains Mono', monospace" }
+              },
+              grid: {
+                display: false
+              }
+            }
+          }
+        }
+      });
+    }
+
+    function renderSemua() {
+      renderPengaturan();
+      renderTabelSiswa();
+      renderHasil();
+      renderDampak();
+    }
+
+    /* ==========================================================================
+       EVENT LISTENERS
+       ========================================================================== */
+    function pasangEvent() {
+      // Header: Tombol Contoh & Reset
+      const btnContoh = document.getElementById("btnContoh");
+      btnContoh?.addEventListener("click", () => {
+        isiDataContoh();
+      });
+
+      const btnReset = document.getElementById("btnReset");
+      btnReset?.addEventListener("click", () => {
+        if (confirm("Reset seluruh data siswa dan pengaturan ke nilai awal?")) {
+          state.kkm = 75;
+          state.bobot = { ph: 40, pts: 30, pas: 30 };
+          state.metode = "none";
+          state.param = { tambah: 5, minmaxMin: 70, minmaxMax: 100 };
+          state.siswa = [];
+          simpanState();
+          renderSemua();
+        }
+      });
+
+      // Panel 1: Pengaturan KKM & Bobot
+      const inputKKM = document.getElementById("inputKKM");
+      inputKKM?.addEventListener("input", (e) => {
+        state.kkm = sanitasiAngka(e.target.value, 75);
+        simpanState();
+        renderHasil();
+        renderDampak();
+      });
+
+      const inputPH = document.getElementById("inputBobotPH");
+      const inputPTS = document.getElementById("inputBobotPTS");
+      const inputPAS = document.getElementById("inputBobotPAS");
+
+      function updateBobot() {
+        state.bobot.ph = sanitasiAngka(inputPH?.value, 40);
+        state.bobot.pts = sanitasiAngka(inputPTS?.value, 30);
+        state.bobot.pas = sanitasiAngka(inputPAS?.value, 30);
+        simpanState();
+        renderPengaturan();
+        renderHasil();
+        renderDampak();
+      }
+
+      inputPH?.addEventListener("input", updateBobot);
+      inputPTS?.addEventListener("input", updateBobot);
+      inputPAS?.addEventListener("input", updateBobot);
+
+      const selectMetode = document.getElementById("selectMetode");
+      selectMetode?.addEventListener("change", (e) => {
+        state.metode = e.target.value;
+        simpanState();
+        renderPengaturan();
+        renderHasil();
+        renderDampak();
+      });
+
+      // Panel 2: Tabel Siswa Aksi
+      const btnTambahBaris = document.getElementById("btnTambahBaris");
+      btnTambahBaris?.addEventListener("click", () => {
+        const baru = {
+          id: buatIdUnik(),
+          nama: "",
+          ph: 70,
+          pts: 70,
+          pas: 70
+        };
+        state.siswa.push(baru);
+        simpanState();
+        renderTabelSiswa();
+        renderHasil();
+        renderDampak();
+      });
+
+      const btnImporCSV = document.getElementById("btnImporCSV");
+      btnImporCSV?.addEventListener("click", () => {
+        imporCSV();
+      });
+
+      // Event delegation untuk input dan hapus di tabel siswa
+      const tbodySiswa = document.getElementById("tbodySiswa");
+      tbodySiswa?.addEventListener("input", (e) => {
+        const target = e.target;
+        const tr = target.closest("tr");
+        if (!tr) return;
+        const id = tr.getAttribute("data-id");
+        const murid = state.siswa.find(s => s.id === id);
+        if (!murid) return;
+
+        if (target.classList.contains("input-nama")) {
+          murid.nama = target.value;
+        } else if (target.classList.contains("input-ph")) {
+          murid.ph = sanitasiAngka(target.value, 0);
+        } else if (target.classList.contains("input-pts")) {
+          murid.pts = sanitasiAngka(target.value, 0);
+        } else if (target.classList.contains("input-pas")) {
+          murid.pas = sanitasiAngka(target.value, 0);
+        }
+
+        simpanState();
+        renderHasil();
+        renderDampak();
+      });
+
+      tbodySiswa?.addEventListener("click", (e) => {
+        const target = e.target;
+        if (target.classList.contains("btn-hapus")) {
+          const id = target.getAttribute("data-id");
+          state.siswa = state.siswa.filter(s => s.id !== id);
+          simpanState();
+          renderTabelSiswa();
+          renderHasil();
+          renderDampak();
+        }
+      });
+
+      // Footer: Ekspor & Cetak
+      const btnEksporCSV = document.getElementById("btnEksporCSV");
+      btnEksporCSV?.addEventListener("click", () => {
+        eksporCSV();
+      });
+
+      const btnCetak = document.getElementById("btnCetak");
+      btnCetak?.addEventListener("click", () => {
+        window.print();
+      });
+    }
+
+    /* ==========================================================================
+       INIT
+       ========================================================================== */
+    function init() {
+      // Muat data dari localStorage jika sudah pernah tersimpan
+      const adaData = muatState();
+      
+      // Jika baru pertama kali dibuka dan siswa masih kosong, biarkan kosong atau tampilkan placeholder
+      renderSemua();
+      pasangEvent();
+    }
+
+    // Jalankan init setelah DOM siap
+    document.addEventListener("DOMContentLoaded", init);
+  </script>
+</body>
+</html>
+
