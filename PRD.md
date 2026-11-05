@@ -163,7 +163,7 @@ Prioritas: **P0** = wajib, **P1** = sebaiknya ada, **P2** = bonus.
 ### 8.1 Nilai Akhir (sebelum katrol)
 
 ```
-NilaiAkhir = (PH �- bobotPH + PTS �- bobotPTS + PAS �- bobotPAS) / 100
+NilaiAkhir = (PH �- bobotPH + PTS �- bobotPTS + PAS �- bobotPAS) / 100
 ```
 
 Syarat: bobotPH + bobotPTS + bobotPAS = 100.
@@ -176,9 +176,9 @@ Misalkan `n` = nilai akhir sebelum katrol. Hasil selalu di-clamp ke 0–100.
 |---|---|---|---|---|
 | `none` | Tanpa katrol | `n` | – | – |
 | `tambah` | Tambah poin tetap | `n + X` | X (0–30) | 5 |
-| `skalaMax` | Skala ke nilai tertinggi | `n / maks �- 100` | – | – |
-| `akar` | Akar kuadrat | `√n �- 10` | – | – |
-| `minmax` | Min-max ke rentang | `A + (n − min) / (maks − min) �- (B − A)` | A, B (0–100, A < B) | 70, 100 |
+| `skalaMax` | Skala ke nilai tertinggi | `n / maks �- 100` | – | – |
+| `akar` | Akar kuadrat | `√n �- 10` | – | – |
+| `minmax` | Min-max ke rentang | `A + (n − min) / (maks − min) �- (B − A)` | A, B (0–100, A < B) | 70, 100 |
 
 Keterangan: `maks` dan `min` adalah nilai akhir tertinggi dan terendah dari siswa yang datanya lengkap.
 
@@ -194,7 +194,7 @@ Keterangan: `maks` dan `min` adalah nilai akhir tertinggi dan terendah dari sisw
 Data: PH 80, PTS 70, PAS 60, bobot 40/30/30.
 
 ```
-NilaiAkhir = (80�-40 + 70�-30 + 60�-30) / 100 = 71,0
+NilaiAkhir = (80�-40 + 70�-30 + 60�-30) / 100 = 71,0
 ```
 
 Dengan `maks` kelas = 90 dan KKM 75:
@@ -422,7 +422,7 @@ Chrome desktop, Safari iOS, dan Chrome Android. Uji juga mode incognito untuk me
 | # | Deliverable | Catatan |
 |---|---|---|
 | 1 | Aplikasi web Katrol.Lab (URL publik) | Harus selesai hari ini |
-| 2 | Poster desain, diunggah ke IG kelas | 1080�-1350, bukan template mentah |
+| 2 | Poster desain, diunggah ke IG kelas | 1080�-1350, bukan template mentah |
 | 3 | Presentasi cara pakai (Canva atau Google Slides), 6 slide | Link di caption IG, akses "Anyone with the link: Viewer" |
 | 4 | Caption IG berisi link aplikasi dan link slide | Link tidak terbuka berarti dianggap tidak mengumpulkan |
 | 5 | ACC dari 2 guru | Tiap guru maksimal 6 kelompok |
