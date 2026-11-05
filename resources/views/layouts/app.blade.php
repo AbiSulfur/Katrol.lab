@@ -20,17 +20,17 @@
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
-<body class="app-shell">
+<body class="min-h-screen bg-[#080808] text-[#F0EDE7] antialiased flex flex-col font-sans select-none selection:bg-[#FF4D00] selection:text-[#080808]">
 
     <!-- ======================================================
          HEADER: Solid black, Cuberto-signature, no blur
          ====================================================== -->
-    <header class="site-header no-print" x-data="{}">
-        <div style="max-width:1600px; width:100%; margin:0 auto; padding:0 20px; display:flex; align-items:center; justify-content:space-between; gap:12px;">
+    <header class="sticky top-0 z-50 h-14 bg-[#080808] border-b border-[#303030] flex items-center no-print">
+        <div class="max-w-[1600px] w-full mx-auto px-5 flex items-center justify-between gap-3">
 
             <!-- Brand -->
-            <a href="/" style="display:flex; align-items:center; gap:12px; flex-shrink:0; text-decoration:none;">
-                <svg width="34" height="34" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+            <a href="{{ route('home') }}" class="flex items-center gap-3 shrink-0 no-underline group">
+                <svg width="34" height="34" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" class="shrink-0 transition-transform duration-200 group-hover:scale-105">
                     <rect width="64" height="64" rx="4" fill="#0E0E0E"/>
                     <rect x="0.5" y="0.5" width="63" height="63" rx="3.5" stroke="#262626"/>
                     <rect x="13.5" y="11" width="6.5" height="42" rx="1.8" fill="#F0EDE7"/>
@@ -45,35 +45,35 @@
                     <rect x="47.5" y="50" width="8" height="8" rx="1.8" fill="#FF4D00"/>
                 </svg>
                 <div>
-                    <div style="font-family:var(--font-display); font-weight:800; font-size:15px; color:var(--paper); letter-spacing:-0.02em; line-height:1;">Katrol.Lab</div>
-                    <div class="label-caps" style="margin-top:1px;">Simulator Nilai Guru</div>
+                    <div class="font-display font-extrabold text-[15px] text-[#F0EDE7] tracking-tight leading-none">Katrol.Lab</div>
+                    <div class="font-mono text-[9px] font-semibold tracking-widest uppercase text-[#585450] mt-0.5">Simulator Nilai Guru</div>
                 </div>
             </a>
 
             <!-- Navigation Links -->
-            <nav style="display:flex; align-items:center; gap:6px;">
-                <a href="{{ route('home') }}" class="nav-pill {{ request()->routeIs('home') ? 'nav-pill-active' : '' }}">
+            <nav class="flex items-center gap-1.5">
+                <a href="{{ route('home') }}" class="font-display text-xs font-semibold px-3 py-1.5 rounded transition-all duration-200 {{ request()->routeIs('home') ? 'text-[#FF4D00] bg-[#FF4D00]/15 border border-[#FF4D00]/30' : 'text-[#A8A39A] hover:text-[#F0EDE7] hover:bg-[#1a1a1a] border border-transparent' }}">
                     Beranda
                 </a>
-                <a href="{{ route('simulator.index') }}" class="nav-pill {{ (request()->routeIs('simulator.index') || request()->routeIs('simulator.view')) ? 'nav-pill-active' : '' }}">
+                <a href="{{ route('simulator.index') }}" class="font-display text-xs font-semibold px-3 py-1.5 rounded transition-all duration-200 {{ (request()->routeIs('simulator.index') || request()->routeIs('simulator.view')) ? 'text-[#FF4D00] bg-[#FF4D00]/15 border border-[#FF4D00]/30' : 'text-[#A8A39A] hover:text-[#F0EDE7] hover:bg-[#1a1a1a] border border-transparent' }}">
                     Simulator
                 </a>
-                <a href="{{ route('profil.index') }}" class="nav-pill {{ request()->routeIs('profil.index') ? 'nav-pill-active' : '' }}">
+                <a href="{{ route('profil.index') }}" class="font-display text-xs font-semibold px-3 py-1.5 rounded transition-all duration-200 {{ request()->routeIs('profil.index') ? 'text-[#FF4D00] bg-[#FF4D00]/15 border border-[#FF4D00]/30' : 'text-[#A8A39A] hover:text-[#F0EDE7] hover:bg-[#1a1a1a] border border-transparent' }}">
                     Profil Guru
                 </a>
             </nav>
 
             <!-- Header actions slot -->
-            <div style="display:flex; align-items:center; gap:8px;">
+            <div class="flex items-center gap-2">
                 @php
                     $navProfil = \App\Models\ProfilGuru::first();
                 @endphp
                 @if($navProfil && !empty($navProfil->nama))
-                    <a href="{{ route('profil.index') }}" title="Profil Guru: {{ $navProfil->nama }}" style="display:inline-flex; align-items:center; gap:7px; padding:4px 10px; background:var(--surface); border:1px solid var(--border); text-decoration:none; border-radius:2px;">
-                        <span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; border-radius:50%; background:var(--accent); color:#000; font-size:10px; font-weight:800; font-family:var(--font-mono);">
+                    <a href="{{ route('profil.index') }}" title="Profil Guru: {{ $navProfil->nama }}" class="inline-flex items-center gap-2 px-2.5 py-1 bg-[#1a1a1a] border border-[#303030] text-inherit no-underline rounded hover:border-[#FF4D00]/40 transition-colors">
+                        <span class="inline-flex items-center justify-center w-5 h-5 rounded-full bg-[#FF4D00] text-[#080808] text-[10px] font-extrabold font-mono">
                             {{ strtoupper(substr($navProfil->nama, 0, 1)) }}
                         </span>
-                        <span style="font-size:12px; font-weight:600; color:var(--paper); max-width:130px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">
+                        <span class="text-xs font-semibold text-[#F0EDE7] max-w-[120px] truncate hidden sm:inline">
                             {{ $navProfil->nama }}
                         </span>
                     </a>
@@ -85,14 +85,11 @@
     </header>
 
     <!-- ======================================================
-         MAIN WORKBENCH
+         MAIN CONTENT / WORKBENCH
          ====================================================== -->
-    <div class="workbench" style="height: calc(100dvh - var(--header-h));">
+    <main class="flex-1 min-h-0 flex flex-col h-[calc(100dvh-3.5rem)] overflow-hidden">
         @yield('content')
-    </div>
-
-    <!-- Footer tidak ditampilkan di workbench layout -->
-    <footer class="no-print" style="display:none;"></footer>
+    </main>
 
     @stack('scripts')
 </body>

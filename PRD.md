@@ -9,7 +9,7 @@
 | **Status** | Draft, siap dikerjakan |
 | **Tim** | Benedictus Abigail Triwiyatno & Syihabuddin Hanif |
 | **Konteks** | Tugas sekolah RPL: aplikasi yang berguna untuk guru |
-| **Platform** | Web (single-page, client-side only) |
+| **Platform** | Web Full-Stack PHP (Laravel 12, Tailwind CSS v4, SQLite, Alpine.js) |
 | **Batas Waktu** | 135 menit (07.00 s.d. 09.15 WIB) |
 | **Tanggal** | 28 Oktober 2026 |
 
@@ -163,7 +163,7 @@ Prioritas: **P0** = wajib, **P1** = sebaiknya ada, **P2** = bonus.
 ### 8.1 Nilai Akhir (sebelum katrol)
 
 ```
-NilaiAkhir = (PH × bobotPH + PTS × bobotPTS + PAS × bobotPAS) / 100
+NilaiAkhir = (PH �- bobotPH + PTS �- bobotPTS + PAS �- bobotPAS) / 100
 ```
 
 Syarat: bobotPH + bobotPTS + bobotPAS = 100.
@@ -176,9 +176,9 @@ Misalkan `n` = nilai akhir sebelum katrol. Hasil selalu di-clamp ke 0–100.
 |---|---|---|---|---|
 | `none` | Tanpa katrol | `n` | – | – |
 | `tambah` | Tambah poin tetap | `n + X` | X (0–30) | 5 |
-| `skalaMax` | Skala ke nilai tertinggi | `n / maks × 100` | – | – |
-| `akar` | Akar kuadrat | `√n × 10` | – | – |
-| `minmax` | Min-max ke rentang | `A + (n − min) / (maks − min) × (B − A)` | A, B (0–100, A < B) | 70, 100 |
+| `skalaMax` | Skala ke nilai tertinggi | `n / maks �- 100` | – | – |
+| `akar` | Akar kuadrat | `√n �- 10` | – | – |
+| `minmax` | Min-max ke rentang | `A + (n − min) / (maks − min) �- (B − A)` | A, B (0–100, A < B) | 70, 100 |
 
 Keterangan: `maks` dan `min` adalah nilai akhir tertinggi dan terendah dari siswa yang datanya lengkap.
 
@@ -194,7 +194,7 @@ Keterangan: `maks` dan `min` adalah nilai akhir tertinggi dan terendah dari sisw
 Data: PH 80, PTS 70, PAS 60, bobot 40/30/30.
 
 ```
-NilaiAkhir = (80×40 + 70×30 + 60×30) / 100 = 71,0
+NilaiAkhir = (80�-40 + 70�-30 + 60�-30) / 100 = 71,0
 ```
 
 Dengan `maks` kelas = 90 dan KKM 75:
@@ -422,26 +422,14 @@ Chrome desktop, Safari iOS, dan Chrome Android. Uji juga mode incognito untuk me
 | # | Deliverable | Catatan |
 |---|---|---|
 | 1 | Aplikasi web Katrol.Lab (URL publik) | Harus selesai hari ini |
-| 2 | Poster desain, diunggah ke IG kelas | 1080×1350, bukan template mentah |
+| 2 | Poster desain, diunggah ke IG kelas | 1080�-1350, bukan template mentah |
 | 3 | Presentasi cara pakai (Canva atau Google Slides), 6 slide | Link di caption IG, akses "Anyone with the link: Viewer" |
 | 4 | Caption IG berisi link aplikasi dan link slide | Link tidak terbuka berarti dianggap tidak mengumpulkan |
 | 5 | ACC dari 2 guru | Tiap guru maksimal 6 kelompok |
 
 **Kepatuhan aturan:** aplikasi unik (tidak sama dengan kelompok lain), desain tidak template AI, dan demo dilakukan tanpa mengganggu guru, kegiatan TKA, atau kegiatan belajar mengajar (hindari demerit).
 
-## 18. Jadwal Pengerjaan (135 menit)
-
-| Waktu | Aktivitas |
-|---|---|
-| 07.00–07.20 | Kunci ide, bagi tugas, siapkan prompt |
-| 07.20–08.00 | Generate kerangka dan logika aplikasi, buat poster dan slide paralel |
-| 08.00–08.15 | Poles desain |
-| 08.15–08.25 | Deploy dan uji di HP dan laptop |
-| 08.25–08.50 | Demo dan ACC ke 2 guru |
-| 08.50–09.05 | Finalisasi poster, slide, dan unggah ke IG |
-| 09.05–09.15 | Cek link di incognito dan buffer |
-
-## 19. Risiko & Mitigasi
+## 18. Risiko & Mitigasi
 
 | Risiko | Dampak | Mitigasi |
 |---|---|---|
@@ -453,13 +441,13 @@ Chrome desktop, Safari iOS, dan Chrome Android. Uji juga mode incognito untuk me
 | CDN grafik gagal dimuat | Grafik kosong | Fallback bar CSS |
 | Demo mengganggu guru | Demerit | Demo saat jeda, tanpa suara, tidak berombongan |
 
-## 20. Pertanyaan Terbuka
+## 19. Pertanyaan Terbuka
 
 1. Apakah status Tuntas/Remedial sebaiknya memakai nilai bulat (bukan 1 desimal), sesuai kebiasaan rapor sekolah?
 2. Perlukah komponen nilai tambahan (misalnya tugas atau praktik) selain PH, PTS, PAS?
 3. Apakah satu skenario cukup, atau perlu dua skenario berdampingan (versi lanjutan)?
 
-## 21. Glosarium
+## 20. Glosarium
 
 | Istilah | Arti |
 |---|---|

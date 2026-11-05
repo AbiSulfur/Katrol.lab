@@ -3,41 +3,41 @@
 @section('title', 'Profil Guru - Katrol.Lab')
 
 @section('header_actions')
-    <a href="{{ route('simulator.index') }}" class="btn btn-secondary btn-sm">
+    <a href="{{ route('simulator.index') }}" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#1a1a1a] text-[#F0EDE7] border border-[#303030] font-sans text-xs font-semibold hover:bg-[#242424] transition-colors">
         Kembali ke Simulator
     </a>
 @endsection
 
 @section('content')
-<div x-data="profilApp(@js($profil))" x-init="init()" style="height: 100%; overflow-y: auto; padding: 40px 24px; max-width: 900px; margin: 0 auto;">
+<div x-data="profilApp(@js($profil))" x-init="init()" class="h-full overflow-y-auto px-4 sm:px-6 py-10 max-w-4xl mx-auto w-full">
 
     <!-- TOAST NOTIFIKASI -->
     <div
         x-show="toast.tampil"
-        x-transition:enter="transition"
+        x-transition:enter="transition duration-200"
         x-transition:enter-start="opacity-0 translate-y-2"
         x-transition:enter-end="opacity-100 translate-y-0"
-        x-transition:leave="transition"
+        x-transition:leave="transition duration-150"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 translate-y-2"
-        class="toast"
-        :class="toast.sukses ? 'toast-sukses' : 'toast-gagal'"
+        class="fixed bottom-6 right-6 z-50 px-5 py-3 rounded border font-sans text-xs font-semibold shadow-2xl flex items-center gap-2"
+        :class="toast.sukses ? 'bg-[#1a1a1a] text-[#4BFFA0] border-[#4BFFA0]/30' : 'bg-[#1a1a1a] text-[#FF3366] border-[#FF3366]/30'"
         style="display:none;"
     >
-        <span style="width:7px; height:7px; border-radius:50%; background:currentColor; flex-shrink:0;"></span>
+        <span class="w-2 h-2 rounded-full bg-current shrink-0"></span>
         <span x-text="toast.pesan"></span>
     </div>
 
     <!-- HEADER PROFIL GURU -->
-    <div class="card" style="padding: 24px; margin-bottom: 24px; display: flex; align-items: center; gap: 20px;">
-        <div style="width: 64px; height: 64px; border-radius: 50%; background: var(--accent); color: #000; font-family: var(--font-display); font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+    <div class="bg-[#111111] border border-[#242424] rounded p-6 mb-6 flex items-center gap-5">
+        <div class="w-16 h-16 rounded-full bg-[#FF4D00] text-[#080808] font-display text-2xl font-extrabold flex items-center justify-center shrink-0 shadow-lg shadow-[#FF4D00]/20">
             <span x-text="inisialGuru"></span>
         </div>
-        <div style="flex: 1; min-width: 0;">
-            <h1 style="font-family: var(--font-display); font-size: 22px; font-weight: 800; color: var(--paper); line-height: 1.2;" x-text="form.nama || 'Nama Guru Belum Diisi'"></h1>
-            <div style="font-size: 13px; color: var(--paper-dim); margin-top: 4px; display: flex; gap: 12px; flex-wrap: wrap;">
+        <div class="flex-1 min-w-0">
+            <h1 class="font-display text-xl sm:text-2xl font-extrabold text-[#F0EDE7] leading-tight" x-text="form.nama || 'Nama Guru Belum Diisi'"></h1>
+            <div class="text-xs sm:text-sm text-[#A8A39A] mt-1 flex items-center gap-2.5 flex-wrap">
                 <span x-text="form.mapel ? 'Mapel: ' + form.mapel : 'Mata Pelajaran Belum Diatur'"></span>
-                <span>&bull;</span>
+                <span class="text-[#585450]">&bull;</span>
                 <span x-text="form.sekolah ? form.sekolah : 'Sekolah Belum Diatur'"></span>
             </div>
         </div>
@@ -46,102 +46,96 @@
     <form @submit.prevent="simpanProfil()">
 
         <!-- PANEL 1: IDENTITAS GURU & KELAS -->
-        <div class="card" style="padding: 24px; margin-bottom: 20px;">
-            <div class="label-caps" style="color: var(--accent); margin-bottom: 16px;">Panel A: Identitas Guru & Kelas</div>
+        <div class="bg-[#111111] border border-[#242424] rounded p-6 mb-5">
+            <div class="font-mono text-[10px] font-semibold tracking-widest uppercase text-[#FF4D00] mb-4">Panel A: Identitas Guru & Kelas</div>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
-                        Nama Lengkap Guru <span style="color: var(--accent);">*</span>
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
+                        Nama Lengkap Guru <span class="text-[#FF4D00]">*</span>
                     </label>
                     <input
                         type="text"
                         x-model="form.nama"
                         placeholder="Contoh: Drs. Bambang Sutrisno, M.Pd."
-                        class="input-box"
-                        style="width: 100%;"
+                        class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                         required
                         maxlength="100"
                     >
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         NIP / NUPTK (Opsional)
                     </label>
                     <input
                         type="text"
                         x-model="form.nip"
                         placeholder="Contoh: 19820415 200801 1 007"
-                        class="input-box"
-                        style="width: 100%;"
+                        class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                         maxlength="50"
                     >
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         Asal Satuan Pendidikan / Sekolah
                     </label>
                     <input
                         type="text"
                         x-model="form.sekolah"
                         placeholder="Contoh: SMAN 1 Indonesia Maju"
-                        class="input-box"
-                        style="width: 100%;"
+                        class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                         maxlength="150"
                     >
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         Mata Pelajaran yang Diampu
                     </label>
                     <input
                         type="text"
                         x-model="form.mapel"
                         placeholder="Contoh: Matematika Wajib"
-                        class="input-box"
-                        style="width: 100%;"
+                        class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                         maxlength="100"
                     >
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         Rombongan Belajar / Kelas
                     </label>
                     <input
                         type="text"
                         x-model="form.kelas"
                         placeholder="Contoh: XII MIPA 2"
-                        class="input-box"
-                        style="width: 100%;"
+                        class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                         maxlength="50"
                     >
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         Tahun Ajaran (Format: YYYY/YYYY)
                     </label>
                     <input
                         type="text"
                         x-model="form.tahun_ajaran"
                         placeholder="2024/2025"
-                        class="input-box"
-                        style="width: 100%;"
+                        class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                         pattern="^\d{4}/\d{4}$"
                         title="Gunakan format 4 digit garis miring 4 digit (misal: 2024/2025)"
                         maxlength="20"
                     >
                 </div>
 
-                <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                <div class="sm:col-span-2">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         Semester
                     </label>
-                    <select x-model="form.semester" class="input-box" style="width: 100%;">
+                    <select x-model="form.semester" class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors">
                         <option value="Ganjil">Semester Ganjil</option>
                         <option value="Genap">Semester Genap</option>
                     </select>
@@ -150,12 +144,12 @@
         </div>
 
         <!-- PANEL 2: PREFERENSI DEFAULT SIMULATOR -->
-        <div class="card" style="padding: 24px; margin-bottom: 24px;">
-            <div class="label-caps" style="color: var(--accent); margin-bottom: 16px;">Panel B: Standar Default Simulator</div>
+        <div class="bg-[#111111] border border-[#242424] rounded p-6 mb-6">
+            <div class="font-mono text-[10px] font-semibold tracking-widest uppercase text-[#FF4D00] mb-4">Panel B: Standar Default Simulator</div>
             
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px;">
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3.5 mb-5">
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         Default KKM
                     </label>
                     <input
@@ -163,14 +157,13 @@
                         x-model.number="form.default_kkm"
                         min="0"
                         max="100"
-                        class="input-box"
-                        style="width: 100%;"
+                        class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                         required
                     >
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         Bobot PH (%)
                     </label>
                     <input
@@ -178,14 +171,13 @@
                         x-model.number="form.default_bobot_ph"
                         min="0"
                         max="100"
-                        class="input-box"
-                        style="width: 100%;"
+                        class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                         required
                     >
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         Bobot PTS (%)
                     </label>
                     <input
@@ -193,14 +185,13 @@
                         x-model.number="form.default_bobot_pts"
                         min="0"
                         max="100"
-                        class="input-box"
-                        style="width: 100%;"
+                        class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                         required
                     >
                 </div>
 
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         Bobot PAS (%)
                     </label>
                     <input
@@ -208,29 +199,28 @@
                         x-model.number="form.default_bobot_pas"
                         min="0"
                         max="100"
-                        class="input-box"
-                        style="width: 100%;"
+                        class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                         required
                     >
                 </div>
             </div>
 
             <!-- Indikator Total Bobot -->
-            <div style="display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; background: var(--surface); border: 1px solid var(--border); margin-bottom: 16px;">
-                <span style="font-size: 12px; color: var(--paper-dim);">Total Bobot Komponen:</span>
+            <div class="flex items-center justify-between p-3 bg-[#1a1a1a] border border-[#242424] rounded mb-5">
+                <span class="text-xs text-[#A8A39A]">Total Bobot Komponen:</span>
                 <span
-                    style="font-family: var(--font-mono); font-size: 13px; font-weight: 700;"
-                    :style="totalBobot === 100 ? 'color: var(--status-tuntas);' : 'color: #FF4D4D;'"
+                    class="font-mono text-xs font-bold"
+                    :class="totalBobot === 100 ? 'text-[#4BFFA0]' : 'text-[#FF4D4D]'"
                     x-text="totalBobot + '% ' + (totalBobot === 100 ? '(Valid Pas 100%)' : '(Wajib tepat 100%)')"
                 ></span>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px;">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                    <label style="display: block; font-size: 11px; font-weight: 600; color: var(--paper-dim); margin-bottom: 6px;">
+                    <label class="block text-[11px] font-semibold text-[#A8A39A] mb-1.5">
                         Default Metode Katrol
                     </label>
-                    <select x-model="form.default_metode" class="input-box" style="width: 100%;">
+                    <select x-model="form.default_metode" class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-2 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors">
                         <option value="none">Tanpa Katrol (Murni)</option>
                         <option value="tambah">Tambah Tetap (+X)</option>
                         <option value="skalaMax">Skala ke Nilai Maksimum</option>
@@ -239,14 +229,14 @@
                     </select>
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 10px; margin-top: 24px;">
+                <div class="flex items-center gap-2.5 sm:pt-6">
                     <input
                         type="checkbox"
                         id="default_jangan_turunkan"
                         x-model="form.default_jangan_turunkan"
-                        style="width: 16px; height: 16px; accent-color: var(--accent); cursor: pointer;"
+                        class="w-4 h-4 accent-[#FF4D00] rounded cursor-pointer"
                     >
-                    <label for="default_jangan_turunkan" style="font-size: 12px; color: var(--paper); cursor: pointer;">
+                    <label for="default_jangan_turunkan" class="text-xs text-[#F0EDE7] cursor-pointer">
                         Kunci nilai agar tidak pernah turun dari nilai awal
                     </label>
                 </div>
@@ -254,17 +244,17 @@
         </div>
 
         <!-- TOMBOL SIMPAN & AKSI -->
-        <div style="display: flex; gap: 12px; justify-content: flex-end; flex-wrap: wrap;">
+        <div class="flex items-center justify-end gap-3 flex-wrap">
             <button
                 type="button"
                 @click="terapkanKeSimulator()"
-                class="btn btn-secondary"
+                class="px-4 py-2 rounded bg-[#1a1a1a] text-[#F0EDE7] border border-[#303030] font-sans text-xs font-semibold hover:bg-[#242424] transition-colors cursor-pointer"
             >
                 Terapkan Default ke Simulator
             </button>
             <button
                 type="submit"
-                class="btn btn-primary"
+                class="px-5 py-2 rounded bg-[#FF4D00] text-[#080808] font-sans text-xs font-bold hover:bg-[#FF6020] transition-colors disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer shadow-lg shadow-[#FF4D00]/20"
                 :disabled="totalBobot !== 100 || prosesMenyimpan"
             >
                 <span x-text="prosesMenyimpan ? 'Menyimpan...' : 'Simpan Profil Guru'"></span>
@@ -305,7 +295,6 @@ function profilApp(initialProfil) {
         },
 
         init() {
-            // Cek jika ada backup lokal di browser
             try {
                 const local = localStorage.getItem('katrollab:profile:v1');
                 if (local && (!this.form.nama || this.form.nama.trim() === '')) {
@@ -353,7 +342,6 @@ function profilApp(initialProfil) {
 
                 const res = await resp.json();
                 if (res.success) {
-                    // Simpan juga ke localStorage browser untuk sinkronisasi instan
                     try {
                         localStorage.setItem('katrollab:profile:v1', JSON.stringify(this.form));
                     } catch (e) {}
@@ -376,7 +364,6 @@ function profilApp(initialProfil) {
                 return;
             }
 
-            // Simpan profil terlebih dahulu
             this.simpanProfil().then(() => {
                 window.location.href = "{{ route('simulator.index') }}";
             });

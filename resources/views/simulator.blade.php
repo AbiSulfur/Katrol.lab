@@ -6,7 +6,7 @@
     <button
         type="button"
         @click="$dispatch('trigger-reset')"
-        class="btn btn-ghost btn-sm"
+        class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-[#1a1a1a] text-[#A8A39A] border border-[#303030] font-sans text-xs font-semibold hover:text-[#F0EDE7] hover:bg-[#242424] transition-colors cursor-pointer"
         title="Muat ulang 12 data siswa standar"
     >
         Reset Data
@@ -14,7 +14,7 @@
     <button
         type="button"
         @click="$dispatch('trigger-simpan')"
-        class="btn btn-primary btn-sm"
+        class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded bg-[#FF4D00] text-[#080808] font-sans text-xs font-bold hover:bg-[#FF6020] transition-colors shadow-lg shadow-[#FF4D00]/20 cursor-pointer"
     >
         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
             <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/>
@@ -24,50 +24,50 @@
 @endsection
 
 @section('content')
-<div x-data="simulatorApp(@js($siswa), @js($defaultSettings))" x-init="init()" @trigger-simpan.window="simpanKeDatabase()" @trigger-reset.window="resetKeDataContoh()" style="display:flex; width:100%; height:100%; overflow:hidden;">
+<div x-data="simulatorApp(@js($siswa), @js($defaultSettings))" x-init="init()" @trigger-simpan.window="simpanKeDatabase()" @trigger-reset.window="resetKeDataContoh()" class="flex flex-col lg:flex-row w-full h-full overflow-hidden">
 
     <!-- ==================================================
          TOAST NOTIFICATION
          ================================================== -->
     <div
         x-show="toast.tampil"
-        x-transition:enter="transition"
+        x-transition:enter="transition duration-200"
         x-transition:enter-start="opacity-0 translate-y-2"
         x-transition:enter-end="opacity-100 translate-y-0"
-        x-transition:leave="transition"
+        x-transition:leave="transition duration-150"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 translate-y-2"
-        class="toast"
-        :class="toast.sukses ? 'toast-sukses' : 'toast-gagal'"
+        class="fixed bottom-6 right-6 z-50 px-5 py-3 rounded border font-sans text-xs font-semibold shadow-2xl flex items-center gap-2"
+        :class="toast.sukses ? 'bg-[#1a1a1a] text-[#4BFFA0] border-[#4BFFA0]/30' : 'bg-[#1a1a1a] text-[#FF3366] border-[#FF3366]/30'"
         style="display:none;"
     >
-        <!-- dot indicator -->
-        <span style="width:7px; height:7px; border-radius:50%; background:currentColor; flex-shrink:0;"></span>
+        <span class="w-2 h-2 rounded-full bg-current shrink-0"></span>
         <span x-text="toast.pesan"></span>
     </div>
 
     <!-- ==================================================
-         SIDEBAR — Control Panel Kiri
+         SIDEBAR: Control Panel Kiri
          ================================================== -->
-    <aside class="sidebar no-print" style="overflow-y:auto; overflow-x:hidden;">
+    <aside class="w-full lg:w-80 shrink-0 border-r border-[#303030] bg-[#111111] overflow-y-auto flex flex-col no-print">
 
         <!-- SECTION 1: KKM & Bobot -->
-        <div class="panel-section">
-            <div class="label-caps" style="margin-bottom:16px;">Standar Kelulusan</div>
+        <div class="p-5 border-b border-[#242424]">
+            <div class="font-mono text-[10px] font-semibold tracking-widest uppercase text-[#585450] mb-4">Standar Kelulusan</div>
 
             <!-- KKM -->
-            <div style="margin-bottom:20px;">
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">
-                    <label style="font-size:11px; font-weight:600; color:var(--paper-dim);">KKM</label>
-                    <span style="font-family:var(--font-mono); font-size:14px; font-weight:700; color:var(--accent);" x-text="kkm"></span>
+            <div class="mb-5">
+                <div class="flex items-center justify-between mb-2">
+                    <label class="text-[11px] font-semibold text-[#A8A39A]">KKM</label>
+                    <span class="font-mono text-sm font-bold text-[#FF4D00]" x-text="kkm"></span>
                 </div>
                 <!-- Quick preset -->
-                <div style="display:flex; gap:6px; margin-bottom:10px;">
+                <div class="flex gap-1.5 mb-2.5">
                     <template x-for="preset in [65, 70, 75, 80]">
                         <button
                             type="button"
                             @click="kkm = preset"
-                            :class="kkm === preset ? 'btn btn-primary btn-sm' : 'btn btn-ghost btn-sm'"
+                            class="px-2.5 py-1 text-xs font-mono font-bold rounded transition-colors cursor-pointer"
+                            :class="kkm === preset ? 'bg-[#FF4D00] text-[#080808]' : 'bg-[#1a1a1a] text-[#A8A39A] hover:bg-[#242424] hover:text-[#F0EDE7] border border-[#303030]'"
                             x-text="preset"
                         ></button>
                     </template>
@@ -77,61 +77,62 @@
                     min="0"
                     max="100"
                     x-model.number="kkm"
-                    class="inp inp-sm"
+                    class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-3 py-1.5 font-mono text-xs focus:border-[#FF4D00] focus:ring-1 focus:ring-[#FF4D00] outline-none transition-colors"
                     placeholder="Ketik KKM (0-100)"
                 >
             </div>
 
             <!-- Bobot Komponen -->
             <div>
-                <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
-                    <span style="font-size:11px; font-weight:600; color:var(--paper-dim);">Bobot Komponen</span>
+                <div class="flex items-center justify-between mb-2.5">
+                    <span class="text-[11px] font-semibold text-[#A8A39A]">Bobot Komponen</span>
                     <span
-                        class="bobot-indicator"
-                        :class="bobotTotal === 100 ? 'bobot-valid' : 'bobot-invalid'"
+                        class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded font-mono text-[11px] font-bold border"
+                        :class="bobotTotal === 100 ? 'bg-[#4BFFA0]/15 text-[#4BFFA0] border-[#4BFFA0]/30' : 'bg-[#FF3366]/15 text-[#FF3366] border-[#FF3366]/30'"
                     >
-                        <span style="width:5px; height:5px; border-radius:50%; background:currentColor;"></span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-current"></span>
                         <span x-text="`${bobotTotal}%`"></span>
                     </span>
                 </div>
 
-                <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-bottom:10px;">
+                <div class="grid grid-cols-3 gap-2 mb-2.5">
                     <!-- PH -->
-                    <div style="background:var(--ink-2); border:1px solid var(--ink-3); border-radius:3px; padding:10px 8px;">
-                        <div class="label-caps" style="margin-bottom:6px; color:var(--accent);">PH</div>
-                        <input type="number" min="0" max="100" x-model.number="bobot.ph" class="inp inp-sm" style="text-align:center;">
-                        <div style="font-family:var(--font-mono); font-size:9px; color:var(--paper-faint); text-align:center; margin-top:4px;">Harian</div>
+                    <div class="bg-[#1a1a1a] border border-[#242424] rounded p-2 text-center">
+                        <div class="font-mono text-[10px] font-semibold tracking-wider uppercase text-[#FF4D00] mb-1">PH</div>
+                        <input type="number" min="0" max="100" x-model.number="bobot.ph" class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-1.5 py-1 font-mono text-xs text-center focus:border-[#FF4D00] outline-none">
+                        <div class="font-mono text-[9px] text-[#585450] mt-1">Harian</div>
                     </div>
                     <!-- PTS -->
-                    <div style="background:var(--ink-2); border:1px solid var(--ink-3); border-radius:3px; padding:10px 8px;">
-                        <div class="label-caps" style="margin-bottom:6px; color:var(--tuntas);">PTS</div>
-                        <input type="number" min="0" max="100" x-model.number="bobot.pts" class="inp inp-sm" style="text-align:center;">
-                        <div style="font-family:var(--font-mono); font-size:9px; color:var(--paper-faint); text-align:center; margin-top:4px;">Tengah</div>
+                    <div class="bg-[#1a1a1a] border border-[#242424] rounded p-2 text-center">
+                        <div class="font-mono text-[10px] font-semibold tracking-wider uppercase text-[#4BFFA0] mb-1">PTS</div>
+                        <input type="number" min="0" max="100" x-model.number="bobot.pts" class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-1.5 py-1 font-mono text-xs text-center focus:border-[#4BFFA0] outline-none">
+                        <div class="font-mono text-[9px] text-[#585450] mt-1">Tengah</div>
                     </div>
                     <!-- PAS -->
-                    <div style="background:var(--ink-2); border:1px solid var(--ink-3); border-radius:3px; padding:10px 8px;">
-                        <div class="label-caps" style="margin-bottom:6px; color:var(--promoted);">PAS</div>
-                        <input type="number" min="0" max="100" x-model.number="bobot.pas" class="inp inp-sm" style="text-align:center;">
-                        <div style="font-family:var(--font-mono); font-size:9px; color:var(--paper-faint); text-align:center; margin-top:4px;">Akhir</div>
+                    <div class="bg-[#1a1a1a] border border-[#242424] rounded p-2 text-center">
+                        <div class="font-mono text-[10px] font-semibold tracking-wider uppercase text-[#7BA7F5] mb-1">PAS</div>
+                        <input type="number" min="0" max="100" x-model.number="bobot.pas" class="w-full bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-1.5 py-1 font-mono text-xs text-center focus:border-[#7BA7F5] outline-none">
+                        <div class="font-mono text-[9px] text-[#585450] mt-1">Akhir</div>
                     </div>
                 </div>
 
-                <!-- Bobot bar visual — tanpa rounded, Cuberto style -->
-                <div class="bobot-bar">
-                    <div class="bobot-bar-ph" :style="`width:${Math.min(100, (bobot.ph/Math.max(bobotTotal,1))*100)}%`"></div>
-                    <div class="bobot-bar-pts" :style="`width:${Math.min(100, (bobot.pts/Math.max(bobotTotal,1))*100)}%`"></div>
-                    <div class="bobot-bar-pas" :style="`width:${Math.min(100, (bobot.pas/Math.max(bobotTotal,1))*100)}%`"></div>
+                <!-- Bobot bar visual -->
+                <div class="h-1 w-full bg-[#242424] flex overflow-hidden rounded-none">
+                    <div class="bg-[#FF4D00] transition-all duration-300" :style="`width:${Math.min(100, (bobot.ph/Math.max(bobotTotal,1))*100)}%`"></div>
+                    <div class="bg-[#4BFFA0] transition-all duration-300" :style="`width:${Math.min(100, (bobot.pts/Math.max(bobotTotal,1))*100)}%`"></div>
+                    <div class="bg-[#7BA7F5] transition-all duration-300" :style="`width:${Math.min(100, (bobot.pas/Math.max(bobotTotal,1))*100)}%`"></div>
                 </div>
-                <div style="display:flex; justify-content:space-between; margin-top:5px;">
-                    <span style="font-family:var(--font-mono); font-size:9px; color:var(--accent);" x-text="`PH ${bobot.ph}%`"></span>
-                    <span style="font-family:var(--font-mono); font-size:9px; color:var(--tuntas);" x-text="`PTS ${bobot.pts}%`"></span>
-                    <span style="font-family:var(--font-mono); font-size:9px; color:var(--promoted);" x-text="`PAS ${bobot.pas}%`"></span>
+                <div class="flex justify-between mt-1 text-[9px] font-mono">
+                    <span class="text-[#FF4D00]" x-text="`PH ${bobot.ph}%`"></span>
+                    <span class="text-[#4BFFA0]" x-text="`PTS ${bobot.pts}%`"></span>
+                    <span class="text-[#7BA7F5]" x-text="`PAS ${bobot.pas}%`"></span>
                 </div>
 
                 <!-- Peringatan bobot tidak valid -->
                 <div
                     x-show="bobotTotal !== 100"
-                    style="margin-top:10px; padding:8px 10px; background:var(--remedial-dim); border:1px solid rgba(255,51,102,0.2); border-radius:3px; font-size:11px; color:var(--remedial); display:none;"
+                    class="mt-2.5 p-2 bg-[#FF3366]/15 border border-[#FF3366]/30 rounded text-xs text-[#FF3366]"
+                    style="display:none;"
                 >
                     Bobot harus tepat 100%. Sekarang: <strong x-text="bobotTotal + '%'"></strong>
                 </div>
@@ -139,74 +140,74 @@
         </div>
 
         <!-- SECTION 2: Metode Katrol -->
-        <div class="panel-section">
-            <div class="label-caps" style="margin-bottom:14px;">Formula Katrol</div>
+        <div class="p-5 border-b border-[#242424]">
+            <div class="font-mono text-[10px] font-semibold tracking-widest uppercase text-[#585450] mb-3.5">Formula Katrol</div>
 
-            <div class="method-tabs" style="gap:6px;">
-                <button type="button" @click="metode = 'none'" class="method-tab" :class="metode === 'none' ? 'active' : ''">
-                    <span class="method-name">Tanpa Katrol</span>
-                    <span class="method-formula">Nilai murni bobot</span>
+            <div class="space-y-1.5">
+                <button type="button" @click="metode = 'none'" class="w-full text-left p-2.5 rounded border transition-colors cursor-pointer flex flex-col gap-0.5" :class="metode === 'none' ? 'bg-[#FF4D00]/15 border-[#FF4D00]/40' : 'bg-[#1a1a1a] border-[#242424] hover:bg-[#242424] hover:border-[#303030]'">
+                    <span class="font-sans text-xs font-semibold" :class="metode === 'none' ? 'text-[#FF4D00]' : 'text-[#A8A39A]'">Tanpa Katrol</span>
+                    <span class="font-mono text-[10px] text-[#585450]">Nilai murni bobot</span>
                 </button>
-                <button type="button" @click="metode = 'tambah'" class="method-tab" :class="metode === 'tambah' ? 'active' : ''">
-                    <span class="method-name">+ Poin Tetap</span>
-                    <span class="method-formula">Nilai + X</span>
+                <button type="button" @click="metode = 'tambah'" class="w-full text-left p-2.5 rounded border transition-colors cursor-pointer flex flex-col gap-0.5" :class="metode === 'tambah' ? 'bg-[#FF4D00]/15 border-[#FF4D00]/40' : 'bg-[#1a1a1a] border-[#242424] hover:bg-[#242424] hover:border-[#303030]'">
+                    <span class="font-sans text-xs font-semibold" :class="metode === 'tambah' ? 'text-[#FF4D00]' : 'text-[#A8A39A]'">+ Poin Tetap</span>
+                    <span class="font-mono text-[10px] text-[#585450]">Nilai + X</span>
                 </button>
-                <button type="button" @click="metode = 'skalaMax'" class="method-tab" :class="metode === 'skalaMax' ? 'active' : ''">
-                    <span class="method-name">Skala Maksimum</span>
-                    <span class="method-formula">(N / Max) x 100</span>
+                <button type="button" @click="metode = 'skalaMax'" class="w-full text-left p-2.5 rounded border transition-colors cursor-pointer flex flex-col gap-0.5" :class="metode === 'skalaMax' ? 'bg-[#FF4D00]/15 border-[#FF4D00]/40' : 'bg-[#1a1a1a] border-[#242424] hover:bg-[#242424] hover:border-[#303030]'">
+                    <span class="font-sans text-xs font-semibold" :class="metode === 'skalaMax' ? 'text-[#FF4D00]' : 'text-[#A8A39A]'">Skala Maksimum</span>
+                    <span class="font-mono text-[10px] text-[#585450]">(N / Max) x 100</span>
                 </button>
-                <button type="button" @click="metode = 'akar'" class="method-tab" :class="metode === 'akar' ? 'active' : ''">
-                    <span class="method-name">Akar Kuadrat</span>
-                    <span class="method-formula">sqrt(N) x 10</span>
+                <button type="button" @click="metode = 'akar'" class="w-full text-left p-2.5 rounded border transition-colors cursor-pointer flex flex-col gap-0.5" :class="metode === 'akar' ? 'bg-[#FF4D00]/15 border-[#FF4D00]/40' : 'bg-[#1a1a1a] border-[#242424] hover:bg-[#242424] hover:border-[#303030]'">
+                    <span class="font-sans text-xs font-semibold" :class="metode === 'akar' ? 'text-[#FF4D00]' : 'text-[#A8A39A]'">Akar Kuadrat</span>
+                    <span class="font-mono text-[10px] text-[#585450]">sqrt(N) x 10</span>
                 </button>
-                <button type="button" @click="metode = 'minmax'" class="method-tab" :class="metode === 'minmax' ? 'active' : ''">
-                    <span class="method-name">Min-Max</span>
-                    <span class="method-formula">Rentang [A, B]</span>
+                <button type="button" @click="metode = 'minmax'" class="w-full text-left p-2.5 rounded border transition-colors cursor-pointer flex flex-col gap-0.5" :class="metode === 'minmax' ? 'bg-[#FF4D00]/15 border-[#FF4D00]/40' : 'bg-[#1a1a1a] border-[#242424] hover:bg-[#242424] hover:border-[#303030]'">
+                    <span class="font-sans text-xs font-semibold" :class="metode === 'minmax' ? 'text-[#FF4D00]' : 'text-[#A8A39A]'">Min-Max</span>
+                    <span class="font-mono text-[10px] text-[#585450]">Rentang [A, B]</span>
                 </button>
             </div>
 
             <!-- Parameter Dinamis -->
-            <div style="margin-top:14px;">
+            <div class="mt-4">
                 <template x-if="metode === 'none'">
-                    <div style="font-size:11px; color:var(--paper-faint); line-height:1.6;">
+                    <div class="text-[11px] text-[#585450] leading-relaxed">
                         Nilai akhir dihitung murni dari bobot komponen. Tidak ada katrol diterapkan.
                     </div>
                 </template>
 
                 <template x-if="metode === 'tambah'">
                     <div>
-                        <div style="font-size:11px; color:var(--paper-faint); margin-bottom:10px; line-height:1.6;">Tambahkan poin yang sama ke semua siswa. Dibatasi maksimal 100.</div>
-                        <div style="display:flex; align-items:center; gap:8px;">
-                            <label class="label-caps">Bonus:</label>
-                            <input id="param-tambah" type="number" min="1" max="50" x-model.number="param.tambah" class="inp inp-sm" style="width:80px;">
-                            <span style="font-family:var(--font-mono); font-size:11px; color:var(--paper-faint);">poin</span>
+                        <div class="text-[11px] text-[#585450] mb-2 leading-relaxed">Tambahkan poin yang sama ke semua siswa. Dibatasi maksimal 100.</div>
+                        <div class="flex items-center gap-2">
+                            <label class="font-mono text-[10px] text-[#A8A39A] uppercase">Bonus:</label>
+                            <input id="param-tambah" type="number" min="1" max="50" x-model.number="param.tambah" class="w-20 bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-2.5 py-1 font-mono text-xs focus:border-[#FF4D00] outline-none">
+                            <span class="font-mono text-xs text-[#585450]">poin</span>
                         </div>
                     </div>
                 </template>
 
                 <template x-if="metode === 'skalaMax'">
-                    <div style="font-size:11px; color:var(--paper-faint); line-height:1.6;">
+                    <div class="text-[11px] text-[#585450] leading-relaxed">
                         Nilai tertinggi di kelas dijadikan 100. Siswa lain dinaikkan secara proporsional.
                     </div>
                 </template>
 
                 <template x-if="metode === 'akar'">
-                    <div style="font-size:11px; color:var(--paper-faint); line-height:1.6;">
+                    <div class="text-[11px] text-[#585450] leading-relaxed">
                         Formula non-linear. Siswa berkemampuan rendah mendapat kenaikan lebih signifikan.
                     </div>
                 </template>
 
                 <template x-if="metode === 'minmax'">
                     <div>
-                        <div style="font-size:11px; color:var(--paper-faint); margin-bottom:10px; line-height:1.6;">Petakan sebaran nilai ke interval target [A, B].</div>
-                        <div style="display:flex; gap:12px;">
+                        <div class="text-[11px] text-[#585450] mb-2.5 leading-relaxed">Petakan sebaran nilai ke interval target [A, B].</div>
+                        <div class="flex gap-3">
                             <div>
-                                <label class="label-caps" style="display:block; margin-bottom:5px;">Target Min (A)</label>
-                                <input type="number" min="0" max="100" x-model.number="param.minmaxMin" class="inp inp-sm" style="width:70px;">
+                                <label class="font-mono text-[10px] text-[#A8A39A] block mb-1">Target Min (A)</label>
+                                <input type="number" min="0" max="100" x-model.number="param.minmaxMin" class="w-18 bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-2.5 py-1 font-mono text-xs focus:border-[#FF4D00] outline-none">
                             </div>
                             <div>
-                                <label class="label-caps" style="display:block; margin-bottom:5px;">Target Max (B)</label>
-                                <input type="number" min="0" max="100" x-model.number="param.minmaxMax" class="inp inp-sm" style="width:70px;">
+                                <label class="font-mono text-[10px] text-[#A8A39A] block mb-1">Target Max (B)</label>
+                                <input type="number" min="0" max="100" x-model.number="param.minmaxMax" class="w-18 bg-[#080808] text-[#F0EDE7] border border-[#303030] rounded px-2.5 py-1 font-mono text-xs focus:border-[#FF4D00] outline-none">
                             </div>
                         </div>
                     </div>
@@ -215,18 +216,16 @@
         </div>
 
         <!-- SECTION 3: Aksi -->
-        <div class="panel-section" style="margin-top:auto;">
-            <div style="display:flex; flex-direction:column; gap:8px;">
-                <button type="button" @click="eksporCSV()" class="btn btn-ghost" style="width:100%; justify-content:center;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                    Ekspor CSV
-                </button>
-                <button type="button" @click="window.print()" class="btn btn-ghost" style="width:100%; justify-content:center;">
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
-                    Cetak Laporan
-                </button>
-            </div>
-            <div style="margin-top:16px; font-size:10px; color:var(--paper-faint); text-align:center; line-height:1.5;">
+        <div class="p-5 mt-auto flex flex-col gap-2">
+            <button type="button" @click="eksporCSV()" class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-[#1a1a1a] text-[#A8A39A] border border-[#303030] font-sans text-xs font-semibold hover:text-[#F0EDE7] hover:bg-[#242424] transition-colors cursor-pointer">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                Ekspor CSV
+            </button>
+            <button type="button" @click="window.print()" class="w-full inline-flex items-center justify-center gap-2 px-3 py-2 rounded bg-[#1a1a1a] text-[#A8A39A] border border-[#303030] font-sans text-xs font-semibold hover:text-[#F0EDE7] hover:bg-[#242424] transition-colors cursor-pointer">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+                Cetak Laporan
+            </button>
+            <div class="mt-3 text-[10px] font-mono text-[#585450] text-center leading-relaxed">
                 Data tersimpan di database ini saja
             </div>
         </div>
@@ -234,197 +233,195 @@
     </aside>
 
     <!-- ==================================================
-         WORKSPACE — Area utama kanan
+         WORKSPACE: Area utama kanan
          ================================================== -->
-    <main class="workspace" style="overflow-y:auto; overflow-x:hidden;">
-        <div style="padding:24px; max-width:1280px;">
+    <main class="flex-1 min-w-0 overflow-y-auto bg-[#080808] p-4 sm:p-6 max-w-[1400px]">
 
-            <!-- ============================================
-                 ROW 1: 4 METRIC CARDS
-                 ============================================ -->
-            <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:12px; margin-bottom:24px;">
+        <!-- ============================================
+             ROW 1: 4 METRIC CARDS
+             ============================================ -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
 
-                <!-- Metric: Remedial -->
-                <div class="metric-tile" :class="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? 'has-change' : ''">
-                    <div class="label-caps" style="margin-bottom:12px;">Siswa Remedial</div>
-                    <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
-                        <span style="font-family:var(--font-mono); font-size:18px; font-weight:600; color:var(--paper-faint); text-decoration:line-through;" x-text="stats.remedialSebelum"></span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--paper-faint); flex-shrink:0;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        <span class="stat-number" style="color:var(--remedial);" x-text="stats.remedialSesudah"></span>
-                    </div>
-                    <div style="margin-top:10px;">
-                        <span
-                            class="badge"
-                            :class="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? 'badge-tuntas' : 'badge-remedial'"
-                            x-text="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? `Turun ${stats.remedialSebelum - stats.remedialSesudah} siswa` : 'Tidak ada perubahan'"
-                        ></span>
-                    </div>
+            <!-- Metric: Remedial -->
+            <div class="bg-[#111111] border border-[#242424] rounded p-4 relative overflow-hidden" :class="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? 'border-l-2 border-l-[#FF4D00]' : ''">
+                <div class="font-mono text-[10px] font-semibold tracking-widest uppercase text-[#585450] mb-2.5">Siswa Remedial</div>
+                <div class="flex items-baseline gap-2 flex-wrap">
+                    <span class="font-mono text-base font-semibold text-[#585450] line-through" x-text="stats.remedialSebelum"></span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#585450] shrink-0"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    <span class="font-display text-2xl sm:text-3xl font-extrabold text-[#FF3366]" x-text="stats.remedialSesudah"></span>
                 </div>
-
-                <!-- Metric: Rata-rata -->
-                <div class="metric-tile" :class="(parseFloat(stats.rataSesudah) - parseFloat(stats.rataSebelum)) > 0 ? 'has-change' : ''">
-                    <div class="label-caps" style="margin-bottom:12px;">Rata-Rata Kelas</div>
-                    <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
-                        <span style="font-family:var(--font-mono); font-size:18px; font-weight:600; color:var(--paper-faint); text-decoration:line-through;" x-text="stats.rataSebelum"></span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--paper-faint); flex-shrink:0;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        <span class="stat-number" style="color:var(--paper);" x-text="stats.rataSesudah"></span>
-                    </div>
-                    <div style="margin-top:10px;">
-                        <span class="badge badge-promoted" x-text="`+${(parseFloat(stats.rataSesudah) - parseFloat(stats.rataSebelum)).toFixed(1)} poin`"></span>
-                    </div>
-                </div>
-
-                <!-- Metric: Tertinggi -->
-                <div class="metric-tile">
-                    <div class="label-caps" style="margin-bottom:12px;">Nilai Tertinggi</div>
-                    <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
-                        <span style="font-family:var(--font-mono); font-size:18px; font-weight:600; color:var(--paper-faint); text-decoration:line-through;" x-text="stats.tertinggiSebelum"></span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--paper-faint); flex-shrink:0;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        <span class="stat-number" x-text="stats.tertinggiSesudah"></span>
-                    </div>
-                    <div style="margin-top:10px; font-size:11px; color:var(--paper-faint);">Puncak capaian kelas</div>
-                </div>
-
-                <!-- Metric: Terendah -->
-                <div class="metric-tile">
-                    <div class="label-caps" style="margin-bottom:12px;">Nilai Terendah</div>
-                    <div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap;">
-                        <span style="font-family:var(--font-mono); font-size:18px; font-weight:600; color:var(--paper-faint); text-decoration:line-through;" x-text="stats.terendahSebelum"></span>
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="color:var(--paper-faint); flex-shrink:0;"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
-                        <span class="stat-number" x-text="stats.terendahSesudah"></span>
-                    </div>
-                    <div style="margin-top:10px; font-size:11px; color:var(--paper-faint);">Batas bawah setelah katrol</div>
+                <div class="mt-2.5">
+                    <span
+                        class="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold tracking-wider uppercase"
+                        :class="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? 'bg-[#4BFFA0]/15 text-[#4BFFA0]' : 'bg-[#FF3366]/15 text-[#FF3366]'"
+                        x-text="(stats.remedialSebelum - stats.remedialSesudah) > 0 ? `Turun ${stats.remedialSebelum - stats.remedialSesudah} siswa` : 'Tidak ada perubahan'"
+                    ></span>
                 </div>
             </div>
 
-            <!-- ============================================
-                 ROW 2: LEDGER SISWA + HASIL KOMPARASI
-                 ============================================ -->
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-bottom:24px;">
-
-                <!-- Kolom kiri: Input siswa -->
-                <div class="tile" style="padding:0;">
-                    <!-- Header tile -->
-                    <div style="padding:16px 20px; border-bottom:1px solid var(--ink-3); display:flex; align-items:center; justify-content:space-between;">
-                        <div>
-                            <div style="font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--paper);">Lembar Nilai Komponen Siswa</div>
-                            <div class="label-caps" style="margin-top:2px;" x-text="`${daftarSiswa.length} siswa`"></div>
-                        </div>
-                        <div style="display:flex; gap:6px;">
-                            <button type="button" @click="tambahSiswa()" class="btn btn-ghost btn-sm">
-                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                                Siswa
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Tabel siswa editable -->
-                    <div style="max-height:460px; overflow-y:auto; overflow-x:auto;">
-                        <table class="ledger">
-                            <thead>
-                                <tr>
-                                    <th style="width:36px; text-align:center;">#</th>
-                                    <th>Nama</th>
-                                    <th style="width:60px; text-align:right;">PH</th>
-                                    <th style="width:60px; text-align:right;">PTS</th>
-                                    <th style="width:60px; text-align:right;">PAS</th>
-                                    <th style="width:36px; text-align:center;"></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template x-for="(s, index) in daftarSiswa" :key="s.id || index">
-                                    <tr>
-                                        <td style="text-align:center; color:var(--paper-faint); font-size:11px;" x-text="index + 1"></td>
-                                        <td style="padding:6px 12px;">
-                                            <input type="text" x-model="s.nama" placeholder="Nama siswa" class="ledger-input" style="font-family:var(--font-sans); font-size:12px;">
-                                        </td>
-                                        <td style="padding:6px 4px;">
-                                            <input type="number" min="0" max="100" x-model.number="s.ph" class="ledger-input" style="text-align:right; width:55px;">
-                                        </td>
-                                        <td style="padding:6px 4px;">
-                                            <input type="number" min="0" max="100" x-model.number="s.pts" class="ledger-input" style="text-align:right; width:55px;">
-                                        </td>
-                                        <td style="padding:6px 4px;">
-                                            <input type="number" min="0" max="100" x-model.number="s.pas" class="ledger-input" style="text-align:right; width:55px;">
-                                        </td>
-                                        <td style="text-align:center; padding:6px 4px;">
-                                            <button type="button" @click="hapusSiswa(index)" style="color:var(--paper-faint); background:none; border:none; cursor:pointer; padding:4px; border-radius:2px; transition:color 0.12s;" onmouseover="this.style.color='var(--remedial)'" onmouseout="this.style.color='var(--paper-faint)'" title="Hapus baris">
-                                                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
-                    </div>
+            <!-- Metric: Rata-rata -->
+            <div class="bg-[#111111] border border-[#242424] rounded p-4 relative overflow-hidden" :class="(parseFloat(stats.rataSesudah) - parseFloat(stats.rataSebelum)) > 0 ? 'border-l-2 border-l-[#FF4D00]' : ''">
+                <div class="font-mono text-[10px] font-semibold tracking-widest uppercase text-[#585450] mb-2.5">Rata-Rata Kelas</div>
+                <div class="flex items-baseline gap-2 flex-wrap">
+                    <span class="font-mono text-base font-semibold text-[#585450] line-through" x-text="stats.rataSebelum"></span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#585450] shrink-0"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    <span class="font-display text-2xl sm:text-3xl font-extrabold text-[#F0EDE7]" x-text="stats.rataSesudah"></span>
                 </div>
-
-                <!-- Kolom kanan: Hasil komparasi -->
-                <div class="tile" style="padding:0;">
-                    <div style="padding:16px 20px; border-bottom:1px solid var(--ink-3); display:flex; align-items:center; justify-content:space-between;">
-                        <div>
-                            <div style="font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--paper);">Hasil Komparasi Kelulusan</div>
-                            <div class="label-caps" style="margin-top:2px;">Sebelum vs sesudah katrol</div>
-                        </div>
-                    </div>
-
-                    <!-- Peringatan bobot tidak valid -->
-                    <div x-show="bobotTotal !== 100" style="padding:12px 20px; background:var(--remedial-dim); border-bottom:1px solid rgba(255,51,102,0.2); font-size:12px; color:var(--remedial); display:none;">
-                        Perbaiki bobot nilai agar total 100% sebelum kalkulasi dapat ditampilkan.
-                    </div>
-
-                    <div x-show="bobotTotal === 100" style="max-height:460px; overflow-y:auto; overflow-x:auto;">
-                        <table class="ledger">
-                            <thead>
-                                <tr>
-                                    <th style="width:28px; text-align:center;">#</th>
-                                    <th>Nama</th>
-                                    <th style="width:52px; text-align:right;">Awal</th>
-                                    <th style="width:64px; text-align:center;">Status</th>
-                                    <th style="width:52px; text-align:right;">Katrol</th>
-                                    <th style="width:64px; text-align:center;">Status</th>
-                                    <th style="width:48px; text-align:right;">Delta</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <template x-for="(item, idx) in hasilKomparasi" :key="item.id || idx">
-                                    <tr>
-                                        <td style="text-align:center; color:var(--paper-faint); font-size:11px;" x-text="idx + 1"></td>
-                                        <td style="font-family:var(--font-sans); font-weight:500; color:var(--paper); font-size:12px; max-width:130px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" x-text="item.nama"></td>
-                                        <td style="text-align:right; color:var(--paper-dim);" x-text="item.nilaiAwal.toFixed(1)"></td>
-                                        <td style="text-align:center;">
-                                            <span class="badge" :class="item.nilaiAwal >= kkm ? 'badge-tuntas' : 'badge-remedial'" x-text="item.nilaiAwal >= kkm ? 'Tuntas' : 'Remedial'"></span>
-                                        </td>
-                                        <td style="text-align:right; font-weight:700; color:var(--paper);" x-text="item.nilaiKatrol.toFixed(1)"></td>
-                                        <td style="text-align:center;">
-                                            <span class="badge" :class="item.nilaiKatrol >= kkm ? 'badge-tuntas' : 'badge-remedial'" x-text="item.nilaiKatrol >= kkm ? 'Tuntas' : 'Remedial'"></span>
-                                        </td>
-                                        <td style="text-align:right; font-size:12px;" :style="item.selisih > 0 ? 'color:var(--tuntas)' : item.selisih < 0 ? 'color:var(--remedial)' : 'color:var(--paper-faint)'">
-                                            <span x-text="`${item.selisih >= 0 ? '+' : ''}${item.selisih.toFixed(1)}`"></span>
-                                        </td>
-                                    </tr>
-                                </template>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="mt-2.5">
+                    <span class="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold tracking-wider uppercase bg-[#7BA7F5]/15 text-[#7BA7F5]" x-text="`+${(parseFloat(stats.rataSesudah) - parseFloat(stats.rataSebelum)).toFixed(1)} poin`"></span>
                 </div>
-
             </div>
 
-            <!-- ============================================
-                 ROW 3: GRAFIK DISTRIBUSI
-                 ============================================ -->
-            <div class="tile" style="padding:0;">
-                <div style="padding:16px 20px; border-bottom:1px solid var(--ink-3);">
-                    <div style="font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--paper);">Sebaran Distribusi Frekuensi Nilai</div>
-                    <div class="label-caps" style="margin-top:2px;">Komparasi jumlah siswa per kelompok interval</div>
+            <!-- Metric: Tertinggi -->
+            <div class="bg-[#111111] border border-[#242424] rounded p-4 relative overflow-hidden">
+                <div class="font-mono text-[10px] font-semibold tracking-widest uppercase text-[#585450] mb-2.5">Nilai Tertinggi</div>
+                <div class="flex items-baseline gap-2 flex-wrap">
+                    <span class="font-mono text-base font-semibold text-[#585450] line-through" x-text="stats.tertinggiSebelum"></span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#585450] shrink-0"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    <span class="font-display text-2xl sm:text-3xl font-extrabold text-[#F0EDE7]" x-text="stats.tertinggiSesudah"></span>
                 </div>
-                <div style="padding:20px; position:relative; height:240px;">
-                    <canvas id="chartBentoSebaran"></canvas>
+                <div class="mt-2.5 text-[11px] font-mono text-[#585450]">Puncak capaian kelas</div>
+            </div>
+
+            <!-- Metric: Terendah -->
+            <div class="bg-[#111111] border border-[#242424] rounded p-4 relative overflow-hidden">
+                <div class="font-mono text-[10px] font-semibold tracking-widest uppercase text-[#585450] mb-2.5">Nilai Terendah</div>
+                <div class="flex items-baseline gap-2 flex-wrap">
+                    <span class="font-mono text-base font-semibold text-[#585450] line-through" x-text="stats.terendahSebelum"></span>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="text-[#585450] shrink-0"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                    <span class="font-display text-2xl sm:text-3xl font-extrabold text-[#F0EDE7]" x-text="stats.terendahSesudah"></span>
+                </div>
+                <div class="mt-2.5 text-[11px] font-mono text-[#585450]">Batas bawah setelah katrol</div>
+            </div>
+        </div>
+
+        <!-- ============================================
+             ROW 2: LEDGER SISWA + HASIL KOMPARASI
+             ============================================ -->
+        <div class="grid grid-cols-1 xl:grid-cols-2 gap-4 mb-6">
+
+            <!-- Kolom kiri: Input siswa -->
+            <div class="bg-[#111111] border border-[#242424] rounded overflow-hidden">
+                <!-- Header tile -->
+                <div class="px-5 py-3.5 border-b border-[#242424] flex items-center justify-between">
+                    <div>
+                        <div class="font-display font-bold text-sm text-[#F0EDE7]">Lembar Nilai Komponen Siswa</div>
+                        <div class="font-mono text-[10px] text-[#585450] mt-0.5" x-text="`${daftarSiswa.length} siswa`"></div>
+                    </div>
+                    <div class="flex gap-1.5">
+                        <button type="button" @click="tambahSiswa()" class="inline-flex items-center gap-1 px-2.5 py-1 rounded bg-[#1a1a1a] text-[#A8A39A] border border-[#303030] font-sans text-xs font-semibold hover:text-[#F0EDE7] hover:bg-[#242424] transition-colors cursor-pointer">
+                            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                            Siswa
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Tabel siswa editable -->
+                <div class="max-h-[460px] overflow-y-auto overflow-x-auto">
+                    <table class="w-full border-collapse font-mono text-xs">
+                        <thead class="sticky top-0 z-10 bg-[#161616] border-b border-[#303030]">
+                            <tr>
+                                <th class="w-9 px-3 py-2.5 text-center text-[10px] font-semibold text-[#585450] uppercase tracking-wider">#</th>
+                                <th class="px-3 py-2.5 text-left text-[10px] font-semibold text-[#585450] uppercase tracking-wider">Nama</th>
+                                <th class="w-16 px-2 py-2.5 text-right text-[10px] font-semibold text-[#585450] uppercase tracking-wider">PH</th>
+                                <th class="w-16 px-2 py-2.5 text-right text-[10px] font-semibold text-[#585450] uppercase tracking-wider">PTS</th>
+                                <th class="w-16 px-2 py-2.5 text-right text-[10px] font-semibold text-[#585450] uppercase tracking-wider">PAS</th>
+                                <th class="w-9 px-2 py-2.5 text-center"></th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#1a1a1a]">
+                            <template x-for="(s, index) in daftarSiswa" :key="s.id || index">
+                                <tr class="hover:bg-[#181818] transition-colors">
+                                    <td class="text-center text-[#585450] text-[11px] py-1.5" x-text="index + 1"></td>
+                                    <td class="px-2 py-1.5">
+                                        <input type="text" x-model="s.nama" placeholder="Nama siswa" class="w-full bg-transparent text-[#F0EDE7] border border-transparent hover:border-[#303030] focus:border-[#FF4D00] focus:bg-[#1a1a1a] rounded px-2 py-1 font-sans text-xs outline-none transition-colors">
+                                    </td>
+                                    <td class="px-1 py-1.5">
+                                        <input type="number" min="0" max="100" x-model.number="s.ph" class="w-full bg-transparent text-[#F0EDE7] border border-transparent hover:border-[#303030] focus:border-[#FF4D00] focus:bg-[#1a1a1a] rounded px-1.5 py-1 font-mono text-xs text-right outline-none transition-colors">
+                                    </td>
+                                    <td class="px-1 py-1.5">
+                                        <input type="number" min="0" max="100" x-model.number="s.pts" class="w-full bg-transparent text-[#F0EDE7] border border-transparent hover:border-[#303030] focus:border-[#FF4D00] focus:bg-[#1a1a1a] rounded px-1.5 py-1 font-mono text-xs text-right outline-none transition-colors">
+                                    </td>
+                                    <td class="px-1 py-1.5">
+                                        <input type="number" min="0" max="100" x-model.number="s.pas" class="w-full bg-transparent text-[#F0EDE7] border border-transparent hover:border-[#303030] focus:border-[#FF4D00] focus:bg-[#1a1a1a] rounded px-1.5 py-1 font-mono text-xs text-right outline-none transition-colors">
+                                    </td>
+                                    <td class="text-center px-1 py-1.5">
+                                        <button type="button" @click="hapusSiswa(index)" class="text-[#585450] hover:text-[#FF3366] transition-colors p-1 rounded cursor-pointer" title="Hapus baris">
+                                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Kolom kanan: Hasil komparasi -->
+            <div class="bg-[#111111] border border-[#242424] rounded overflow-hidden">
+                <div class="px-5 py-3.5 border-b border-[#242424] flex items-center justify-between">
+                    <div>
+                        <div class="font-display font-bold text-sm text-[#F0EDE7]">Hasil Komparasi Kelulusan</div>
+                        <div class="font-mono text-[10px] text-[#585450] mt-0.5">Sebelum vs sesudah katrol</div>
+                    </div>
+                </div>
+
+                <!-- Peringatan bobot tidak valid -->
+                <div x-show="bobotTotal !== 100" class="p-4 bg-[#FF3366]/15 border-b border-[#FF3366]/30 text-xs text-[#FF3366]" style="display:none;">
+                    Perbaiki bobot nilai agar total 100% sebelum kalkulasi dapat ditampilkan.
+                </div>
+
+                <div x-show="bobotTotal === 100" class="max-h-[460px] overflow-y-auto overflow-x-auto">
+                    <table class="w-full border-collapse font-mono text-xs">
+                        <thead class="sticky top-0 z-10 bg-[#161616] border-b border-[#303030]">
+                            <tr>
+                                <th class="w-8 px-2 py-2.5 text-center text-[10px] font-semibold text-[#585450] uppercase tracking-wider">#</th>
+                                <th class="px-3 py-2.5 text-left text-[10px] font-semibold text-[#585450] uppercase tracking-wider">Nama</th>
+                                <th class="w-14 px-2 py-2.5 text-right text-[10px] font-semibold text-[#585450] uppercase tracking-wider">Awal</th>
+                                <th class="w-18 px-2 py-2.5 text-center text-[10px] font-semibold text-[#585450] uppercase tracking-wider">Status</th>
+                                <th class="w-14 px-2 py-2.5 text-right text-[10px] font-semibold text-[#585450] uppercase tracking-wider">Katrol</th>
+                                <th class="w-18 px-2 py-2.5 text-center text-[10px] font-semibold text-[#585450] uppercase tracking-wider">Status</th>
+                                <th class="w-14 px-2 py-2.5 text-right text-[10px] font-semibold text-[#585450] uppercase tracking-wider">Delta</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-[#1a1a1a]">
+                            <template x-for="(item, idx) in hasilKomparasi" :key="item.id || idx">
+                                <tr class="hover:bg-[#181818] transition-colors">
+                                    <td class="text-center text-[#585450] text-[11px] py-2" x-text="idx + 1"></td>
+                                    <td class="px-3 py-2 font-sans font-medium text-[#F0EDE7] text-xs max-w-[130px] truncate" x-text="item.nama"></td>
+                                    <td class="text-right text-[#A8A39A] px-2 py-2" x-text="item.nilaiAwal.toFixed(1)"></td>
+                                    <td class="text-center px-2 py-2">
+                                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold tracking-wider uppercase" :class="item.nilaiAwal >= kkm ? 'bg-[#4BFFA0]/15 text-[#4BFFA0]' : 'bg-[#FF3366]/15 text-[#FF3366]'" x-text="item.nilaiAwal >= kkm ? 'Tuntas' : 'Remedial'"></span>
+                                    </td>
+                                    <td class="text-right font-bold text-[#F0EDE7] px-2 py-2" x-text="item.nilaiKatrol.toFixed(1)"></td>
+                                    <td class="text-center px-2 py-2">
+                                        <span class="inline-block px-2 py-0.5 rounded text-[10px] font-mono font-bold tracking-wider uppercase" :class="item.nilaiKatrol >= kkm ? 'bg-[#4BFFA0]/15 text-[#4BFFA0]' : 'bg-[#FF3366]/15 text-[#FF3366]'" x-text="item.nilaiKatrol >= kkm ? 'Tuntas' : 'Remedial'"></span>
+                                    </td>
+                                    <td class="text-right text-xs px-2 py-2" :class="item.selisih > 0 ? 'text-[#4BFFA0]' : item.selisih < 0 ? 'text-[#FF3366]' : 'text-[#585450]'">
+                                        <span x-text="`${item.selisih >= 0 ? '+' : ''}${item.selisih.toFixed(1)}`"></span>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
                 </div>
             </div>
 
         </div>
+
+        <!-- ============================================
+             ROW 3: GRAFIK DISTRIBUSI
+             ============================================ -->
+        <div class="bg-[#111111] border border-[#242424] rounded overflow-hidden">
+            <div class="px-5 py-3.5 border-b border-[#242424]">
+                <div class="font-display font-bold text-sm text-[#F0EDE7]">Sebaran Distribusi Frekuensi Nilai</div>
+                <div class="font-mono text-[10px] text-[#585450] mt-0.5">Komparasi jumlah siswa per kelompok interval</div>
+            </div>
+            <div class="p-5 relative h-60">
+                <canvas id="chartBentoSebaran"></canvas>
+            </div>
+        </div>
+
     </main>
 
 </div>
@@ -632,29 +629,36 @@ function simulatorApp(initialSiswa, initialSettings) {
                             labels: {
                                 boxWidth: 10,
                                 boxHeight: 10,
-                                borderRadius: 0,
                                 color: '#A8A39A',
                                 font: {
                                     family: "'JetBrains Mono', monospace",
-                                    size: 11
-                                },
-                                padding: 16
+                                    size: 10
+                                }
                             }
                         }
                     },
                     scales: {
+                        x: {
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                            ticks: {
+                                color: '#585450',
+                                font: {
+                                    family: "'JetBrains Mono', monospace",
+                                    size: 10
+                                }
+                            }
+                        },
                         y: {
                             beginAtZero: true,
+                            grid: { color: 'rgba(255, 255, 255, 0.05)' },
                             ticks: {
                                 stepSize: 1,
                                 color: '#585450',
-                                font: { family: "'JetBrains Mono', monospace", size: 11 }
-                            },
-                            grid: { color: 'rgba(36, 36, 36, 1)' }
-                        },
-                        x: {
-                            ticks: { color: '#585450', font: { family: "'JetBrains Mono', monospace", size: 11 } },
-                            grid: { display: false }
+                                font: {
+                                    family: "'JetBrains Mono', monospace",
+                                    size: 10
+                                }
+                            }
                         }
                     }
                 }
@@ -663,12 +667,11 @@ function simulatorApp(initialSiswa, initialSettings) {
 
         tambahSiswa() {
             this.daftarSiswa.push({
-                id: null,
-                nama: '',
+                nama: 'Siswa Baru ' + (this.daftarSiswa.length + 1),
                 nis: '',
-                ph: 70,
-                pts: 70,
-                pas: 70
+                ph: 75,
+                pts: 75,
+                pas: 75
             });
         },
 
